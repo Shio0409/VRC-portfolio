@@ -1,0 +1,55 @@
+import { createServer } from 'node:http';
+import { createReadStream } from 'node:fs';
+import { stat } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const project = fileURLToPath(new URL('../', import.meta.url));
+const built = process.argv.includes('--dist');
+const root = built ? path.join(project, 'dist') : project;
+const portArgument = process.argv.indexOf('--port');
+const port = portArgument >= 0 ? Number(process.argv[portArgument + 1]) : 4173;
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png' };
+
+// Serve only the public web surface. Unity, original documents, and tooling stay private.
+const publicFiles = new Map([
+  ['/', 'index.html'], ['/index.html', 'index.html'], ['/favicon.svg', 'favicon.svg'],
+  ['/src/styles.css', 'src/styles.css'], ['/src/app.js', 'src/app.js'],
+  ['/src/entry-flow.js', 'src/entry-flow.js'], ['/src/assets.js', 'src/assets.js'],
+  ['/assets/playing.png', 'assets/playing.png'],
+  ['/assets/cursor-normal.svg', 'assets/cursor-normal.svg'],
+  ['/assets/cursor-hover.svg', 'assets/cursor-hover.svg'],
+]);
+
+const server = createServer(async (request, response) => {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    response.writeHead(405, { Allow: 'GET, HEAD' }).end();
+    return;
+  }
+  try {
+    const pathname = new URL(request.url, 'http://localhost').pathname;
+    const relative = publicFiles.get(pathname);
+    if (!relative) { response.writeHead(404).end('Not found'); return; }
+    const file = !built && relative === 'assets/playing.png'
+      ? path.resolve(project, '../material/playing.png')
+      : path.join(root, relative);
+    const info = await stat(file);
+    if (!info.isFile()) { response.writeHead(404).end('Not found'); return; }
+    response.writeHead(200, {
+      'Content-Type': types[path.extname(file)] || 'application/octet-stream',
+      'Content-Length': info.size,
+      'Cache-Control': 'no-cache',
+      'X-Content-Type-Options': 'nosniff',
+    });
+    if (request.method === 'HEAD') { response.end(); return; }
+    const stream = createReadStream(file);
+    stream.on('error', () => response.destroy());
+    response.on('close', () => stream.destroy());
+    stream.pipe(response);
+  } catch {
+    if (!response.headersSent) response.writeHead(404).end('Not found');
+    else response.destroy();
+  }
+});
+server.on('error', (error) => { console.error(error.message); process.exitCode = 1; });
+server.listen(port, '127.0.0.1', () => console.log(`Local: http://127.0.0.1:${server.address().port}/ (${built ? 'build' : 'development'})`));

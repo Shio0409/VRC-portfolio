@@ -1,0 +1,17 @@
+# Track the website and only the source assets required by its build.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/web/
+!/material/
+
+/material/*
+!/material/playing.png
+
+**/node_modules/
+**/dist/
+**/.local/
+**/.env
+**/.env.*
+!**/.env.example
