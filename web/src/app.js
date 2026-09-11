@@ -23,7 +23,7 @@ flow.subscribe((state) => {
   const visibleScreen = state.phase === 'error' ? 'loading' : state.phase;
   if (state.phase !== previousPhase) {
     for (const [name, screen] of Object.entries(screens)) screen.hidden = name !== visibleScreen;
-    soundButton.hidden = state.phase === 'entry';
+    byId('sound-control').hidden = state.phase === 'entry';
     const failed = state.phase === 'error';
     screens.loading.dataset.error = String(failed);
     byId('error-message').hidden = !failed;

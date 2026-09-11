@@ -28,14 +28,16 @@
         </div>
         <div class="header-right">
           <p class="corner-words" aria-hidden="true">CREATE<br />EXPLORE<br />CONNECT</p>
-          <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" aria-label="サウンドをONにする" hidden>
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path d="M11 4 5 9H2v6h3l6 5V4Z" stroke-linejoin="round" />
-              <path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" stroke-linecap="round" />
-              <path class="sound-cross" d="m16 9 6 6m0-6-6 6" stroke-linecap="round" />
-            </svg>
-            <span id="sound-label">SOUND OFF</span>
-          </button>
+          <div class="sound-control" id="sound-control" hidden>
+            <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" aria-label="サウンドをONにする">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M11 4 5 9H2v6h3l6 5V4Z" stroke-linejoin="round" />
+                <path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" stroke-linecap="round" />
+                <path class="sound-cross" d="m16 9 6 6m0-6-6 6" stroke-linecap="round" />
+              </svg>
+              <span class="sound-label" id="sound-label" aria-hidden="true">SOUND OFF</span>
+            </button>
+          </div>
         </div>
       </header>
 
