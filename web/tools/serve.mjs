@@ -15,6 +15,7 @@ const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=
 const publicFiles = new Map([
   ['/', 'index.html'], ['/index.html', 'index.html'], ['/favicon.svg', 'favicon.svg'],
   ['/src/styles.css', 'src/styles.css'], ['/src/app.js', 'src/app.js'],
+  ['/src/viewport.css', 'src/viewport.css'], ['/src/viewport.js', 'src/viewport.js'],
   ['/src/entry-flow.js', 'src/entry-flow.js'], ['/src/assets.js', 'src/assets.js'],
   ['/assets/playing.png', 'assets/playing.png'],
   ['/assets/cursor-normal.svg', 'assets/cursor-normal.svg'],

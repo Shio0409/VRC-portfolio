@@ -2,12 +2,13 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#061d27" />
     <meta name="description" content="Sioのポートフォリオ。VRで出会う、もうひとつのわたし。" />
     <title>Sio's Portfolio</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./src/styles.css" />
+    <link rel="stylesheet" href="./src/viewport.css" />
     <script type="module" src="./src/app.js"></script>
   </head>
   <body>
@@ -18,7 +19,16 @@
       <i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i>
     </div>
 
-    <div class="site-shell">
+    <section class="orientation-gate" id="orientation-gate" tabindex="-1" aria-labelledby="orientation-title" aria-describedby="orientation-note">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="19" y="33" width="62" height="35" rx="6" />
+        <path d="M73 44v13M28 22a34 34 0 0 1 47 1m0-10v11H64M72 80a34 34 0 0 1-47-1m0 10V78h11" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <h2 id="orientation-title">端末を横向きにしてください</h2>
+      <p id="orientation-note">このサイトは横画面でお楽しみいただけます。<br />画面の回転ロックを解除して、端末を横にしてください。</p>
+    </section>
+
+    <div class="site-shell" id="site-shell">
       <header class="site-header">
         <div class="brand" aria-label="sio0409 Portfolio Site">
           <span class="brand-name">sio0409</span>

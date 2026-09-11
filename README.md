@@ -21,9 +21,11 @@ node tools/serve.mjs
 
 ```sh
 node tests/entry-flow.test.js
+node tests/viewport.test.js
 node --check src/app.js
 node --check src/entry-flow.js
 node --check src/assets.js
+node --check src/viewport.js
 node tools/build.mjs
 ```
 

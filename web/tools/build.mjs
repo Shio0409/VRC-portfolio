@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'dist');
-const files = ['index.html', 'favicon.svg', 'src/styles.css', 'src/app.js', 'src/entry-flow.js', 'src/assets.js', 'assets/cursor-normal.svg', 'assets/cursor-hover.svg'];
+const files = ['index.html', 'favicon.svg', 'src/styles.css', 'src/viewport.css', 'src/app.js', 'src/viewport.js', 'src/entry-flow.js', 'src/assets.js', 'assets/cursor-normal.svg', 'assets/cursor-hover.svg'];
 await mkdir(path.join(output, 'src'), { recursive: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });
 for (const file of files) await copyFile(path.join(root, file), path.join(output, file));

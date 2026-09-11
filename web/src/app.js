@@ -1,5 +1,6 @@
 import { createEntryFlow } from './entry-flow.js';
 import { loadInitialAssets } from './assets.js';
+import { setupOrientationGate } from './viewport.js';
 
 const byId = (id) => document.getElementById(id);
 const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen') };
@@ -8,11 +9,19 @@ const image = byId('world-image');
 const soundButton = byId('sound-toggle');
 const progress = byId('travel-progress');
 const fill = byId('progress-fill');
+const shell = byId('site-shell');
 const flow = createEntryFlow({
   loadAssets: loadInitialAssets,
   now: () => performance.now(),
   requestFrame: (callback) => requestAnimationFrame(callback),
   cancelFrame: (id) => cancelAnimationFrame(id),
+});
+
+setupOrientationGate({
+  media: matchMedia('(pointer: coarse) and (max-width: 767px) and (orientation: portrait)'),
+  shell,
+  gate: byId('orientation-gate'),
+  getResumeTarget: () => flow.getState().phase === 'error' ? byId('retry-button') : headings[flow.getState().phase],
 });
 
 let previousPhase;
@@ -32,7 +41,7 @@ flow.subscribe((state) => {
     byId('announcement').textContent = failed
       ? '画像を読み込めませんでした。再試行するか、SKIPで先へ進めます。'
       : state.phase === 'loading' ? 'Sio’s Portfolioへ接続しています。' : '';
-    if (previousPhase !== undefined) {
+    if (previousPhase !== undefined && !shell.inert) {
       if (failed) byId('retry-button').focus({ preventScroll: true });
       else if (!(previousPhase === 'error' && state.phase === 'loading')) headings[visibleScreen].focus({ preventScroll: true });
       else headings.loading.focus({ preventScroll: true });

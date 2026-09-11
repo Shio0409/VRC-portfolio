@@ -18,9 +18,11 @@
 ```sh
 node tools/serve.mjs
 node tests/entry-flow.test.js
+node tests/viewport.test.js
 node --check src/app.js
 node --check src/entry-flow.js
 node --check src/assets.js
+node --check src/viewport.js
 node tools/build.mjs
 node tools/serve.mjs --dist
 ```
@@ -79,13 +81,19 @@ node tools/serve.mjs --dist
 
 ## アクセシビリティと軽量化
 
+全画面で`src/viewport.css`の横画面レイアウトを共有します。四隅の共通UIと中央コンテンツの配置・情報はPCとスマートフォンで共通です。以前のスマホ向け縦積み、ヘッダーやフッターを隠すルールは撤去しました。
+
+`src/viewport.js`は幅767px以下・主ポインターcoarse・縦向きの場合に回転案内を表示し、サイト本体をinertにします。回転でLoadingやSoundの状態を作り直さず、横向きに戻ると現在の画面へフォーカスを戻します。PCの縦長ウィンドウには回転案内を出しません。
+
+画像や余白を画面の高さに合わせて調整し、操作ボタンは44px以上を維持します。全体の一括縮小やズーム禁止は行いません。最小レイアウト幅は568pxで、収まらない表示条件ではスクロールを許可します。`viewport-fit=cover`とsafe-area-insetでノッチ等を避けます。今後の各画面もこの共通方針を使用します。
+
 - キーボード操作可能なbuttonと、操作対象が分かるfocus-visible。
 - 非表示画面にはhidden属性を使い、画面遷移時に見出しへフォーカスを移動。
 - progressbarの値、読込失敗の通知、画像の代替テキストを提供。
 - prefers-reduced-motionではアニメーションを停止。
-- モバイル幅・低い横長画面に対応。内容が収まらない場合は縦スクロールを許可。
+- 横画面の配置を維持し、内容が収まらない場合はスクロールを許可。
 - 背景色は固定のCSSグラデーション。ぼけた光を個別の粒子として下から上へ動かす。画像・動画、Canvas、Three.js、外部フォントの読込なし。
-- 粒子はPCで16個、幅700px以下で10個。大きさ・速度・開始位置・横方向の移動量を個別に設定し、56〜94秒でゆっくり上昇する。
+- 粒子はPCで16個、主ポインターcoarseのタッチ端末で10個。大きさ・速度・開始位置・横方向の移動量を個別に設定し、56〜94秒でゆっくり上昇する。縦向き案内の表示中は停止する。
 - 粒子の柔らかい輪郭もCSSグラデーションで描画。アニメーションは小さな要素のtransform / opacityのみを更新し、画面全体の移動やblurフィルターを使わない。動きを減らす設定では粒子を表示しない。
 
 ## 検証
@@ -93,3 +101,5 @@ node tools/serve.mjs --dist
 `npm test`は、最低2秒、遅い読込、デコード待ち、SKIP、中断後の応答、失敗・再試行、Sound変更、初期Mute、進捗の速度変化と後退防止、読込文言の切り替えを確認します。`npm run check`でモジュール構文、`npm run build`で公開ファイルとHTMLのローカル参照を確認します。
 
 ブラウザ上の最終的な見た目・端末実機での挙動は、プレビューでの確認事項です。
+
+`tests/viewport.test.js`は初期表示、縦向きでの操作制御、回転後の現在画面への復帰、イベント解除を検証します。

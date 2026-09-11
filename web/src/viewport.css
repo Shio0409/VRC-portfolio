@@ -1,0 +1,94 @@
+/* Shared landscape stage for every section, with the same composition on PC and phone. */
+:root {
+  --edge-x: max(16px, 3vw);
+  --edge-y: max(12px, 2.8svh);
+  --safe-left: max(var(--edge-x), env(safe-area-inset-left));
+  --safe-right: max(var(--edge-x), env(safe-area-inset-right));
+  --safe-top: max(var(--edge-y), env(safe-area-inset-top));
+  --safe-bottom: max(var(--edge-y), env(safe-area-inset-bottom));
+}
+.site-shell {
+  position: relative;
+  min-width: 568px;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(104px, 1fr) min(728px, calc(100% - 208px)) minmax(104px, 1fr);
+  align-items: center;
+  padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+}
+.site-header, .site-footer {
+  position: absolute;
+  left: var(--safe-left);
+  right: var(--safe-right);
+  pointer-events: none;
+}
+.site-header { top: var(--safe-top); }
+.site-footer { bottom: var(--safe-bottom); }
+.sound-control { pointer-events: auto; }
+main { grid-column: 2; display: grid; place-items: center; min-width: 0; }
+.screen { padding: 0; }
+
+/* Scale spacing and imagery, while keeping text readable and controls at least 44px. */
+.brand-name { font-size: clamp(14px, 2.7svh, 24px); }
+.brand-description { font-size: clamp(9px, 1.45svh, 13px); }
+.brand-caption { font-size: clamp(10px, 1.55svh, 14px); }
+.small-rule { margin: clamp(4px, 1svh, 10px) 0; }
+.corner-words { font-size: clamp(9px, 1.35svh, 12px); }
+.header-right { gap: clamp(6px, 1.4svh, 13px); }
+.footer-motto, .footer-mark { font-size: clamp(8px, 1.35svh, 12px); letter-spacing: .12em; }
+.footer-motto .small-rule { margin-top: clamp(4px, 1svh, 14px); }
+.footer-mark span { margin-inline: .4em; }
+.eyebrow { font-size: clamp(11px, 1.5svh, 13px); }
+.world-thumbnail { width: min(100%, 34.5rem, 80svh); }
+.destination { margin-top: clamp(6px, 2svh, 27px); }
+.travel-label { font-size: clamp(12px, 2svh, 18px); }
+.planet-icon { width: clamp(24px, 3.8svh, 34px); height: clamp(18px, 3.1svh, 28px); }
+.destination h1, .top-screen h1 { font-size: clamp(20px, 4.7svh, 42px); margin-block: clamp(4px, .7svh, 7px); letter-spacing: .065em; }
+.creator { font-size: clamp(13px, 2.15svh, 19px); }
+.loading-progress { margin-top: clamp(8px, 2.5svh, 32px); }
+.progress-track { height: clamp(8px, 1.8svh, 17px); }
+.progress-caption { font-size: clamp(12px, 1.55svh, 14px); min-height: 20px; margin-top: 6px; }
+.loading-actions { margin-top: clamp(8px, 2svh, 24px); gap: 8px; }
+.button { min-height: 44px; padding: clamp(10px, 1.5svh, 14px) 20px; font-size: clamp(13px, 1.8svh, 16px); }
+.skip-button { min-width: min(100%, 200px); }
+.error-message { font-size: 12px; margin-top: 6px; }
+.sound-symbol { width: clamp(44px, 9svh, 84px); height: clamp(44px, 9svh, 84px); margin-bottom: clamp(8px, 3svh, 35px); }
+.sound-symbol svg { width: 50%; height: 50%; }
+.sound-screen h1 { font-size: clamp(20px, 3.6svh, 32px); margin-block: clamp(6px, 1.6svh, 16px); }
+.entry-note { font-size: clamp(12px, 1.7svh, 15px); }
+.sound-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(8px, 1.8svh, 16px); margin-top: clamp(12px, 3svh, 40px); }
+.choice { min-height: clamp(64px, 12svh, 104px); padding: clamp(10px, 2.4svh, 22px) 24px clamp(10px, 2.4svh, 22px) 12px; }
+.choice-label { font-size: clamp(12px, 1.8svh, 16px); letter-spacing: .09em; }
+.choice-detail { font-size: clamp(11px, 1.6svh, 14px); margin-top: 5px; }
+.choice-arrow { right: 6px; width: 14px; }
+.arrival-line { margin-block: clamp(12px, 3svh, 32px); }
+.top-note { font-size: clamp(13px, 1.8svh, 16px); }
+.return-button { margin-top: clamp(12px, 3svh, 32px); }
+
+.orientation-gate { display: none; }
+/* Match the app's query: a narrow portrait touch viewport, not a narrow PC window. */
+@media (pointer: coarse) and (max-width: 767px) and (orientation: portrait) {
+  .site-shell { display: none; }
+  .orientation-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    overflow: auto;
+    padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 35%, #103d4c, #051922 75%);
+  }
+  .orientation-gate:focus { outline: none; }
+  .orientation-gate svg { width: 100px; height: 100px; color: var(--cyan); flex-shrink: 0; }
+  .orientation-gate h2 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.6; }
+  .orientation-gate p { max-width: 28em; font-size: 14px; line-height: 1.9; color: var(--muted); }
+  .particle { animation-play-state: paused; }
+}
+@media (pointer: coarse) {
+  .particle:nth-child(n + 11) { display: none; animation: none; }
+}
