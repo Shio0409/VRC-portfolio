@@ -2,6 +2,8 @@
 
 VRChatのワールド移動体験をモチーフにした、Sioのポートフォリオサイトです。現在はSound選択、Loading、仮TOPを実装しています。
 
+GitHub: [Shio0409/VRC-portfolio](https://github.com/Shio0409/VRC-portfolio)
+
 ## 開発
 
 Node.js 22以上を使用します。外部パッケージのインストールは不要です。

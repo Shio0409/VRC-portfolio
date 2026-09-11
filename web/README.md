@@ -6,7 +6,7 @@
 
 - HTML / CSS / JavaScript（ES Modules）。ランタイム・開発用とも外部依存パッケージなし。
 - Node.js 22以上で開発サーバー・静的ファイル出力・テストを実行。
-- GitHub Pages用に静的ファイルだけを出力。サブドメイン名やGitHubリポジトリは未設定。
+- GitHub Pages用に静的ファイルだけを出力。リポジトリは[Shio0409/VRC-portfolio](https://github.com/Shio0409/VRC-portfolio)。Pages公開設定とサブドメイン名は未設定。
 - ファイルURLは相対指定。ドメイン直下とGitHub Project Pagesのサブパスに対応する構成。
 - フォントは端末のシステムフォントを使用。フォント最終選定は保留。
 - Unity側のファイルは使用・変更しない。Three.jsはアバター実装の段階で導入を検討する。
