@@ -33,6 +33,8 @@ node tools/build.mjs
 
 - `web/`: HTML / CSS / JavaScript、カーソル素材、開発ツール、テスト。
 - `material/playing.png`: Loading画面で使用する画像原本。
+- `portfolio sitedesign.md`: サイト全体の仕様・確定事項・保留事項。
+- `consept/`: 各画面と共通カーソルのコンセプト資料。
 - 詳しい実装内容は[web/README.md](web/README.md)を参照してください。
 
-Git管理の対象はWebサイトとビルドに必要な素材です。Unityプロジェクト、制作途中の仕様書・コンセプト資料、生成物は対象外です。
+Git管理の対象はWebサイト、ビルドに必要な素材、仕様書、コンセプト資料です。Unityプロジェクトと生成物は対象外です。

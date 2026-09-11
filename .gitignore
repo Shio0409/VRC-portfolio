@@ -1,10 +1,15 @@
-# Track the website and only the source assets required by its build.
+# Track the website, its source assets, specification, and concept references.
 /*
 !/.gitignore
 !/.gitattributes
 !/README.md
+!/portfolio sitedesign.md
+!/consept/
 !/web/
 !/material/
+
+# Keep the Unity project local.
+/siofel 2601/
 
 /material/*
 !/material/playing.png
