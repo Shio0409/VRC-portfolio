@@ -715,7 +715,7 @@ UIや背景全体をThree.jsで構築しません。
 | WORKS正式素材・YouTube動画 | 未確定 | 後回し |
 | CONTACT画像・本文・リンク | 未確定 | 別途準備 |
 | BGM / SE / 環境音等 | 未用意 | 別途用意する |
-| Web用GLB / glTF | 未用意 | 対象アバターから別途準備する |
+| Web用GLB / glTF | `web/.local/avatar/kipfel-web-preview-1k.glb` | 確認用GLBを作成済み・約14.8MB。最終採用モデルではない。詳細は`web/tools/avatar/README.md` |
 
 コンセプトアート4枚は1672×941 pxのPNGです。背景・サムネイル・プロフィール画像などを含む完成画面の参考であり、各部品の独立した実素材が揃っていることを意味しません。
 
@@ -736,7 +736,7 @@ UIや背景全体をThree.jsで構築しません。
 | 分類 | 未確定・保留の内容 |
 |---|---|
 | TOP | 具体的なIdle Pose、ギター所持の有無、Animation内容、確定会話全文 |
-| アバター準備 | 指定Hierarchyオブジェクトの保存済みデータとの対応、Web用モデル・Morph・Bone・Textureの選別 |
+| アバター準備 | 指定Hierarchyから確認用GLBを作成済み。Three.jsでの見た目・変形確認、Web用モデル・Morph・Bone・Textureの選別、lilToon等のWeb向け再構成 |
 | Loading | 将来の初期読込対象、TOPアバターが未ロードの場合の最終表示。初回は画像のみを読み込み、完了・SKIPで仮TOPへ進む |
 | CAREER | 画像、教室長代理の説明・Keywords等、各項目の再生時間、同年内の詳細調整、音素材の内容 |
 | CAREERの旧指定 | 個人オンラインゲーム開発の年・本文・最新原稿への組み込み方 |
