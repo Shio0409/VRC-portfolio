@@ -18,6 +18,8 @@ try {
   const controls = new OrbitControls(camera, renderer.domElement);
   const render = () => { if (!document.hidden && !orientation.matches) renderer.render(scene, camera); };
   controls.addEventListener('change', render);
+  const ambient = new THREE.AmbientLight(0xffffff, 1.5); scene.add(ambient);
+  $('ambient').oninput = () => { ambient.intensity = Number($('ambient').value); $('ambient-value').value = $('ambient').value; render(); };
   scene.add(new THREE.HemisphereLight(0xe7f6ff, 0x536077, 2.5));
   const light = new THREE.DirectionalLight(0xffffff, 2.5); light.position.set(2, 3, 4); scene.add(light);
   const fill = new THREE.DirectionalLight(0xb9ddff, 1); fill.position.set(-2, 1, -2); scene.add(fill);
@@ -37,6 +39,7 @@ try {
     if (object.isBone) bones.set(object.uuid, { object, quaternion: object.quaternion.clone() });
     if (!object.isMesh) return;
     meshes.push({ mesh: object, material: object.material });
+    for (const material of Array.isArray(object.material) ? object.material : [object.material]) material.vertexColors = false;
     if (!object.morphTargetInfluences?.length) return;
     const group = gltf.parser.associations.get(object)?.meshes ?? object.uuid;
     const data = { mesh: object, group, source: object.geometry, weights: [...object.morphTargetInfluences], dictionary: { ...object.morphTargetDictionary } };
@@ -66,7 +69,9 @@ try {
         geometry.groups = data.source.groups.map(group => ({ ...group }));
         geometry.morphTargetsRelative = data.source.morphTargetsRelative;
         // No empty arrays: Three.js treats an existing position array as morph-enabled.
-        if (indices.length) for (const [kind, attributes] of Object.entries(data.source.morphAttributes)) geometry.morphAttributes[kind] = indices.map(index => attributes[index]);
+        if (indices.length) for (const [kind, attributes] of Object.entries(data.source.morphAttributes)) {
+          geometry.morphAttributes[kind] = indices.map(index => attributes[index]);
+        }
         data.mesh.geometry = geometry;
         data.mesh.updateMorphTargets();
         data.key = key;
@@ -78,6 +83,12 @@ try {
     render();
   };
   applyMorph();
+  $('vertex-colors').onchange = () => {
+    for (const { mesh, material } of meshes) for (const item of Array.isArray(material) ? material : [material]) {
+      item.vertexColors = $('vertex-colors').checked && Boolean(mesh.geometry.attributes.color); item.needsUpdate = true;
+    }
+    render();
+  };
   scene.add(model); model.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(model);
   const center = bounds.getCenter(new THREE.Vector3());

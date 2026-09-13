@@ -18,6 +18,8 @@
         <div class="views"><button data-view="0">正面</button><button data-view="1.570796">側面</button><button data-view="3.141593">背面</button></div>
         <label>マテリアル<select id="material"><option value="pbr">PBR（変換結果）</option><option value="unlit">Unlit（色を確認）</option></select></label>
         <label class="check"><input type="checkbox" id="skeleton">骨を表示</label>
+        <label>補助環境光 <output id="ambient-value">1.5</output><input id="ambient" type="range" min="0" max="4" step="0.1" value="1.5"></label>
+        <label class="check"><input type="checkbox" id="vertex-colors">頂点カラーを乗算して比較</label>
         <label>表情 / Shape Key<select id="morph"><option value="">元の状態</option></select></label>
         <label>表情の強さ <output id="weight-value">0</output><input id="weight" type="range" min="0" max="1" step="0.01" value="0"></label>
         <label>骨<select id="bone"><option value="">選択なし</option></select></label>

@@ -7,10 +7,21 @@ var originalDirty = sourceScene.isDirty;
 var output = System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../web/.local/avatar"));
 System.IO.Directory.CreateDirectory(output);
 var filename = "kipfel-preview-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
-var temporaryScene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Additive);
 GameObject clone = null;
 UnityGLTF.GLTFSettings settings = null;
 var temporaryMaterials = new List<Material>();
+// Optional local selection, deliberately separate from the published site specification.
+var selectionFile = System.IO.Path.Combine(output, "animation-selection.json");
+var selection = System.IO.File.Exists(selectionFile) ? Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(selectionFile)) : new Newtonsoft.Json.Linq.JObject();
+var clips = new List<AnimationClip>();
+foreach (var entry in selection["clips"] as Newtonsoft.Json.Linq.JArray ?? new Newtonsoft.Json.Linq.JArray()) {
+  var path = (string)entry["path"];
+  var name = (string)entry["name"];
+  var matches = AssetDatabase.LoadAllAssetsAtPath(path).OfType<AnimationClip>().Where(c => c.name == name).ToArray();
+  if (matches.Length != 1) throw new Exception("Animation clip must match exactly: " + path + " / " + name);
+  clips.Add(matches[0]);
+}
+var temporaryScene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Additive);
 try {
   clone = UnityEngine.Object.Instantiate(source);
   UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(clone, temporaryScene);
@@ -29,6 +40,35 @@ try {
   if (!build.Successful) throw new Exception("NDMF reported errors. Review its report before exporting.");
   clone.transform.position = Vector3.zero;
   clone.transform.rotation = Quaternion.identity;
+
+  // Pose offsets are applied after NDMF, against its final hierarchy. Never edit the source.
+  foreach (var entry in selection["pose"] as Newtonsoft.Json.Linq.JArray ?? new Newtonsoft.Json.Linq.JArray()) {
+    var target = clone.transform.Find((string)entry["path"]);
+    if (target == null) throw new Exception("Pose transform not found: " + entry["path"]);
+    target.localRotation = Quaternion.Euler((float)entry["x"], (float)entry["y"], (float)entry["z"]);
+  }
+  foreach (var entry in selection["expressions"] as Newtonsoft.Json.Linq.JArray ?? new Newtonsoft.Json.Linq.JArray()) {
+    var target = clone.transform.Find((string)entry["path"]);
+    var renderer = target != null ? target.GetComponent<SkinnedMeshRenderer>() : null;
+    var index = renderer != null ? renderer.sharedMesh.GetBlendShapeIndex((string)entry["name"]) : -1;
+    if (index < 0) throw new Exception("BlendShape not found: " + entry);
+    renderer.SetBlendShapeWeight(index, (float)entry["weight"]);
+  }
+  // Reject bindings that would silently disappear after clothing/armature processing.
+  foreach (var clip in clips) {
+    if (AnimationUtility.GetObjectReferenceCurveBindings(clip).Length != 0) throw new Exception("Object/material switching is not supported: " + clip.name);
+    foreach (var binding in AnimationUtility.GetCurveBindings(clip)) {
+      if (binding.type == typeof(Animator) && clip.isHumanMotion) continue;
+      var target = string.IsNullOrEmpty(binding.path) ? clone.transform : clone.transform.Find(binding.path);
+      if (target == null) throw new Exception("Animation binding missing after NDMF: " + clip.name + " / " + binding.path);
+      if (binding.type == typeof(Transform)) continue;
+      if (binding.type == typeof(SkinnedMeshRenderer) && binding.propertyName.StartsWith("blendShape.")) {
+        var renderer = target.GetComponent<SkinnedMeshRenderer>();
+        if (renderer != null && renderer.sharedMesh.GetBlendShapeIndex(binding.propertyName.Substring(11)) >= 0) continue;
+      }
+      throw new Exception("Unsupported animation property: " + clip.name + " / " + binding.propertyName);
+    }
+  }
 
   // PBR baseline only: lilToon lighting/outline/MatCap require a later Web shader pass.
   var standard = Shader.Find("Standard");
@@ -67,6 +107,10 @@ try {
   settings.UseTextureFileTypeHeuristic = false;
   settings.UseCaching = false;
   var context = new UnityGLTF.ExportContext(settings);
+  // Export only the requested clips, not every VRChat controller and state.
+  context.AfterSceneExport = (exporter, root) => {
+    if (clips.Count > 0) exporter.ExportAnimationClips(clone.transform, clips, clone.GetComponent<Animator>());
+  };
   context.AfterMaterialExport = (exporter, root, material, node) => {
     var original = originals[material];
     node.DoubleSided = original.HasProperty("_Cull") && original.GetInt("_Cull") == 0;
