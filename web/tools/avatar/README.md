@@ -70,6 +70,24 @@ node web/tools/avatar/validate-glb.mjs output.glb report.json
 
 ### クリップ再生
 
+### 全候補カタログ（2026-09-13）
+
+`list-animations.cs`をUnity MCPから実行し、`Kipfel for portfolio`の各コンポーネントが参照するControllerのクリップと、`Assets/MOCHIYAMA/Kipfel`以下のクリップを収集します。Unityプロジェクト全体の無関係な作品までは含めません。今回204件でした。
+
+`web/.local/avatar/animation-selection.json`を`{"catalog":true}`にして`export-preview.cs`を実行すると、一覧の全候補を処理します。元クリップを複製して対応外のカーブを除き、除いた理由を`animation-catalog.json`に記録します。全カーブが対応外の場合も一覧から削除しません。単独の選択クリップ書き出しでは従来どおり対応外カーブをエラーにするため、カタログでの一部再現を本番対応と混同しないでください。
+
+今回の結果は再生可能123件（対応外カーブなし60件、一部対応63件）、再生不可81件です。対象がないギター制御や標準衣装、VRChat固有の設定変更、固定表情だけのクリップなどは理由を表示します。VRChatプロキシはVRChat内で置換される実動作を含まない旨を表示します。
+
+最適化済みファイルはローカルの`kipfel-catalog-1k.glb`（42,167,760 bytes）。確認用サーバー：
+
+```sh
+node web/tools/serve.mjs --avatar --avatar-model kipfel-catalog-1k.glb --port 4177
+```
+
+`http://127.0.0.1:4177/avatar/`で検索、フォルダカテゴリ、前へ／次へ、Play/Pause、Seekを利用できます。各項目の元ファイルパスと未対応理由も表示します。GLBとカタログは公開ビルド・Git管理に含めません。
+
+検証：StandingGirlの2秒、Sittingの3秒のポーズ、再生、検索絞り込みをブラウザで確認。ギターのVRChat追従制御は再現していないため持ち位置は一致しません。123件すべてのフレームを目視検証したわけではありません。形式検証はエラー0、警告481（スキン付きノードのTransformアニメーションがglTFで無視される警告）。Unity書き出し時には無効オブジェクトのカーブ除外と、時間逆行に関する警告も出ています。採用クリップは個別に再検証します。元Unityシーンは保存せず、書き出し前後ともcleanを維持しました。
+
 アニメーション入りの最適化済みGLBを`web/.local/avatar`へ置き、次のように指定します。
 
 ```sh

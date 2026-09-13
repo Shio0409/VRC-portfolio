@@ -16,7 +16,12 @@
       <fieldset disabled id="controls">
         <legend>表示と変形の確認</legend>
         <p>Body / eye_pupil_OFF：<output id="pupil-value">—</output>（固定）</p>
+        <label>アニメーション検索<input id="animation-search" type="search" placeholder="名前・フォルダで検索"></label>
+        <label>カテゴリ<select id="animation-category"><option value="">すべて</option></select></label>
+        <p id="catalog-count"></p>
         <label>Animation<select id="animation"><option value="">クリップなし</option></select></label>
+        <div class="views"><button id="previous-clip">前へ</button><button id="next-clip">次へ</button></div>
+        <p id="clip-details"></p>
         <button id="play" disabled>Play</button>
         <label>再生位置 <output id="time-value">0.00 s</output><input id="time" type="range" min="0" max="1" step="0.01" value="0" disabled></label>
         <div class="views"><button data-view="0">正面</button><button data-view="1.570796">側面</button><button data-view="3.141593">背面</button></div>
@@ -30,7 +35,7 @@
         <label>ローカルX軸の回転 <output id="angle-value">0°</output><input id="angle" type="range" min="-30" max="30" step="1" value="0"></label>
         <button id="reset">ポーズ・表情を戻す</button>
       </fieldset>
-      <p id="stats"></p><p class="note">lilToon・PhysBone・VRChat機能の再現は未実装。ギターの有無とTOPのポーズは未確定です。</p>
+      <p id="stats"></p><p class="note">lilToon・PhysBone・VRChat機能の再現は未実装。ギターの手への追従も未再現のため、身体のポーズを中心に確認してください。ギターの有無とTOPのポーズは未確定です。</p>
     </aside>
   </main>
 </body></html>

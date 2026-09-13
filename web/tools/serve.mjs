@@ -29,6 +29,7 @@ if (avatar) {
     publicFiles.set(`/avatar/${name}`, `tools/avatar/${name}`);
   }
   publicFiles.set('/avatar/', 'tools/avatar/viewer.html');
+  publicFiles.set('/avatar/catalog.json', '.local/avatar/animation-catalog.json');
   const modelArgument = process.argv.indexOf('--avatar-model');
   const modelName = modelArgument < 0 ? 'kipfel-web-preview-1k.glb' : process.argv[modelArgument + 1];
   if (!modelName || !/^[a-zA-Z0-9_-]+\.glb$/.test(modelName)) throw new Error('Use a GLB filename in web/.local/avatar for --avatar-model');

@@ -133,15 +133,41 @@ try {
   const pause = () => { playing = false; cancelAnimationFrame(frame); frame = 0; previous = 0; $('play').textContent = 'Play'; };
   const resumeVisible = () => { previous = 0; if (playing && !frame) frame = requestAnimationFrame(tick); };
   document.addEventListener('visibilitychange', resumeVisible); orientation.addEventListener('change', resumeVisible);
-  clips.forEach((clip, index) => $('animation').add(new Option(clip.name || `Clip ${index + 1}`, String(index))));
+  let catalog = [];
+  const catalogResponse = await fetch('/avatar/catalog.json');
+  if (catalogResponse.ok) catalog = await catalogResponse.json();
+  // A catalog belongs to the loaded GLB only when at least one exported name matches.
+  if (!catalog.some(row => clips.some(clip => clip.name === row.clipName))) catalog = clips.map(clip => ({ name:clip.name, clipName:clip.name, path:'GLB', status:'ready', notes:[] }));
+  catalog.forEach(row => { row.index = clips.findIndex(clip => clip.name === row.clipName); row.category = row.path.split('/').slice(-2,-1)[0] || 'GLB'; });
+  for (const category of [...new Set(catalog.map(row => row.category))].sort()) $('animation-category').add(new Option(category, category));
+  const filterClips = () => {
+    const selected = $('animation').value, query = $('animation-search').value.trim().toLowerCase(), category = $('animation-category').value;
+    $('animation').replaceChildren(new Option('選択なし', ''));
+    catalog.forEach((row, index) => {
+      if (category && row.category !== category || query && !`${row.name} ${row.path}`.toLowerCase().includes(query)) return;
+      const label = row.status === 'unavailable' || row.index < 0 ? '［再生不可］' : row.status === 'partial' ? '［一部のみ］' : '';
+      $('animation').add(new Option(`${label}${row.name}`, String(index)));
+    });
+    $('animation').value = selected;
+    if ($('animation').selectedIndex < 0) $('animation').value = '';
+    $('catalog-count').textContent = `${$('animation').options.length - 1} / ${catalog.length}件 · 再生可能 ${catalog.filter(row=>row.index>=0).length}件（一部対応を含む）`;
+    if ($('animation').value !== selected) $('animation').onchange();
+  };
   $('animation').onchange = () => {
     pause(); mixer.stopAllAction(); action = undefined;
+    $('clip-details').textContent = '';
     if ($('animation').value !== '') {
-      const clip = clips[Number($('animation').value)]; action = mixer.clipAction(clip); action.reset().play(); mixer.update(0);
-      $('time').max = Math.max(clip.duration, 0.01);
+      const row = catalog[Number($('animation').value)], clip = clips[row.index];
+      const proxyNote = row.path.includes('ProxyAnim') ? '\nVRChat用プロキシです。VRChat内で置換される実際の動きは含まれません。' : '';
+      $('clip-details').textContent = `${row.name}\n${row.path}\n${clip ? `${clip.duration.toFixed(2)}秒${clip.duration === 0 ? '（静止ポーズ）' : ''}` : '現在のモデルで再生できるカーブがありません'}\n${(row.notes || []).join('\n')}${proxyNote}`;
+      if (clip) { action = mixer.clipAction(clip); action.reset().play(); mixer.update(0); $('time').max = Math.max(clip.duration, 0.01); }
     }
     $('play').disabled = !action; $('time').disabled = !action; syncAnimation();
   };
+  $('animation-search').oninput = filterClips; $('animation-category').onchange = filterClips;
+  const moveClip = delta => { const select=$('animation'); if(select.options.length<2)return; select.selectedIndex=Math.max(1,Math.min(select.options.length-1,select.selectedIndex+delta)); select.onchange(); };
+  $('previous-clip').onclick=()=>moveClip(-1); $('next-clip').onclick=()=>moveClip(1);
+  filterClips();
   $('play').onclick = () => { if (playing) pause(); else if (action) { playing = true; $('play').textContent = 'Pause'; resumeVisible(); } };
   $('time').oninput = () => { if (action) { pause(); action.time = Number($('time').value); mixer.update(0); syncAnimation(); } };
   const bounds = new THREE.Box3().setFromObject(model);

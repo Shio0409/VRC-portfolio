@@ -14,7 +14,10 @@ var temporaryMaterials = new List<Material>();
 var selectionFile = System.IO.Path.Combine(output, "animation-selection.json");
 var selection = System.IO.File.Exists(selectionFile) ? Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(selectionFile)) : new Newtonsoft.Json.Linq.JObject();
 var clips = new List<AnimationClip>();
-foreach (var entry in selection["clips"] as Newtonsoft.Json.Linq.JArray ?? new Newtonsoft.Json.Linq.JArray()) {
+var catalogMode = (bool?)selection["catalog"] == true;
+var catalog = catalogMode ? Newtonsoft.Json.Linq.JArray.Parse(System.IO.File.ReadAllText(System.IO.Path.Combine(output, "animation-catalog-source.json"))) : new Newtonsoft.Json.Linq.JArray();
+var temporaryClips = new List<AnimationClip>();
+foreach (var entry in catalogMode ? catalog : selection["clips"] as Newtonsoft.Json.Linq.JArray ?? new Newtonsoft.Json.Linq.JArray()) {
   var path = (string)entry["path"];
   var name = (string)entry["name"];
   var matches = AssetDatabase.LoadAllAssetsAtPath(path).OfType<AnimationClip>().Where(c => c.name == name).ToArray();
@@ -58,6 +61,32 @@ try {
   var pupilIndex = body.sharedMesh.GetBlendShapeIndex("eye_pupil_OFF");
   if (pupilIndex < 0) throw new Exception("Required Body / eye_pupil_OFF is missing.");
   body.SetBlendShapeWeight(pupilIndex, 100);
+  if (catalogMode) {
+    var eligible = new List<AnimationClip>();
+    for (var i = 0; i < clips.Count; i++) {
+      var originalClip = clips[i];
+      var clip = UnityEngine.Object.Instantiate(originalClip); clip.name = originalClip.name; temporaryClips.Add(clip);
+      var reasons = new HashSet<string>();
+      foreach (var binding in AnimationUtility.GetObjectReferenceCurveBindings(clip)) {
+        AnimationUtility.SetObjectReferenceCurve(clip, binding, null); reasons.Add("オブジェクト／マテリアル差し替えはWeb未対応");
+      }
+      foreach (var binding in AnimationUtility.GetCurveBindings(clip)) {
+        var target = string.IsNullOrEmpty(binding.path) ? clone.transform : clone.transform.Find(binding.path);
+        var renderer = target != null ? target.GetComponent<SkinnedMeshRenderer>() : null;
+        var locked = binding.path == "Body" && binding.propertyName == "blendShape.eye_pupil_OFF";
+        var supported = !locked && ((binding.type == typeof(Animator) && clip.isHumanMotion) || (target != null && binding.type == typeof(Transform)) || (renderer != null && binding.propertyName.StartsWith("blendShape.") && renderer.sharedMesh.GetBlendShapeIndex(binding.propertyName.Substring(11)) >= 0));
+        if (!supported) {
+          AnimationUtility.SetEditorCurve(clip, binding, null);
+          reasons.Add(locked ? "eye_pupil_OFFは100固定を優先" : target == null ? "現在のアバターに対象がない: " + binding.path : "Web未対応の制御: " + binding.propertyName);
+        }
+      }
+      catalog[i]["notes"] = new Newtonsoft.Json.Linq.JArray(reasons);
+      catalog[i]["status"] = AnimationUtility.GetCurveBindings(clip).Length == 0 ? "unavailable" : reasons.Count > 0 ? "partial" : "ready";
+      catalog[i]["clipName"] = "";
+      if ((string)catalog[i]["status"] != "unavailable") eligible.Add(clip);
+    }
+    clips = eligible;
+  }
   // A selected clip must not override the permanent expression constraint.
   foreach (var clip in clips) foreach (var binding in AnimationUtility.GetCurveBindings(clip)) {
     if (binding.path == "Body" && binding.propertyName == "blendShape.eye_pupil_OFF")
@@ -118,7 +147,12 @@ try {
   var context = new UnityGLTF.ExportContext(settings);
   // Export only the requested clips, not every VRChat controller and state.
   context.AfterSceneExport = (exporter, root) => {
-    if (clips.Count > 0) exporter.ExportAnimationClips(clone.transform, clips, clone.GetComponent<Animator>());
+    if (!catalogMode) { if (clips.Count > 0) exporter.ExportAnimationClips(clone.transform, clips, clone.GetComponent<Animator>()); }
+    else foreach (var clip in clips) {
+      var animation = exporter.ExportAnimationClip(clip, clip.name, clone.transform, 1);
+      var row = catalog.First(x => (string)x["name"] == clip.name && (string)x["status"] != "unavailable");
+      row["clipName"] = animation.Name;
+    }
   };
   context.AfterMaterialExport = (exporter, root, material, node) => {
     var original = originals[material];
@@ -128,10 +162,12 @@ try {
   };
   new UnityGLTF.GLTFSceneExporter(clone.transform, context).SaveGLB(output, filename);
   var file = System.IO.Path.Combine(output, filename + ".glb");
+  if (catalogMode) System.IO.File.WriteAllText(System.IO.Path.Combine(output, "animation-catalog.json"), catalog.ToString());
   return new { file, bytes = new System.IO.FileInfo(file).Length, ndmfSuccessful = build.Successful, sourceScene = sourceScene.path, sourceDirtyBefore = originalDirty, sourceDirtyAfter = sourceScene.isDirty, materials = converted.Count };
 } finally {
   if (clone != null) UnityEngine.Object.DestroyImmediate(clone);
   foreach (var material in temporaryMaterials) UnityEngine.Object.DestroyImmediate(material);
+  foreach (var clip in temporaryClips) UnityEngine.Object.DestroyImmediate(clip);
   if (settings != null) UnityEngine.Object.DestroyImmediate(settings);
   UnityEngine.SceneManagement.SceneManager.SetActiveScene(sourceScene);
   UnityEditor.SceneManagement.EditorSceneManager.CloseScene(temporaryScene, true);

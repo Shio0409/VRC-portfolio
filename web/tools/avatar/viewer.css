@@ -11,4 +11,5 @@ button,select { min-height:44px; color:inherit; background:#253848; border:1px s
 button,select,input { cursor:url('/assets/cursor-hover.svg') 8 8,pointer; } button:hover { background:#355567; } :focus-visible { outline:2px solid #74dded; outline-offset:3px; }
 select,input[type=range],#reset { width:100%; } select { display:block; margin-top:4px; } input[type=range] { min-height:32px; accent-color:#78d8ee; } .views { display:flex; gap:6px; } .views button { flex:1; } output { float:right; } .note { border-top:1px solid #405360; padding-top:14px; }
 #rotation { min-height:100dvh; display:grid; place-content:center; text-align:center; gap:12px; padding:24px; }
+#animation-search { width:100%; min-height:44px; background:#253848; color:inherit; border:1px solid #546f80; border-radius:8px; padding:8px; font:inherit; } #clip-details { overflow-wrap:anywhere; white-space:pre-line; }
 @media (pointer:coarse) and (max-width:767px) and (orientation:portrait) { #shell { display:none; } }
