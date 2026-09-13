@@ -43,22 +43,28 @@ try {
     if (!object.morphTargetInfluences?.length) return;
     const group = gltf.parser.associations.get(object)?.meshes ?? object.uuid;
     const data = { mesh: object, group, source: object.geometry, weights: [...object.morphTargetInfluences], dictionary: { ...object.morphTargetDictionary } };
+    data.locked = gltf.parser.json.meshes[group]?.name === 'Body' ? data.dictionary.eye_pupil_OFF : undefined;
+    if (data.locked !== undefined) data.weights[data.locked] = 1;
     morphs.push(data);
     if (!morphGroups.has(group)) {
       morphGroups.add(group);
       const name = gltf.parser.json.meshes[group]?.name ?? object.name;
       for (const [targetName, index] of Object.entries(data.dictionary)) {
+        if (index === data.locked) continue;
         $('morph').add(new Option(`${name} / ${targetName}`, `${morphs.length - 1}:${index}`));
       }
     }
   });
   // Keep the source geometry on CPU; upload only baseline and selected morphs.
+  if (!morphs.some(data => data.locked !== undefined)) throw new Error('Required Body / eye_pupil_OFF is missing');
   // Large facial sets can exceed a GPU's texture-array layer limit otherwise.
   const applyMorph = () => {
     const [selected, target] = $('morph').value.split(':').map(Number);
     morphs.forEach((data) => {
       const isSelected = Boolean($('morph').value) && data.group === morphs[selected]?.group;
-      const indices = data.weights.flatMap((weight, index) => weight !== 0 ? [index] : []);
+      const weights = data.animatedWeights ?? data.weights;
+      if (data.locked !== undefined) weights[data.locked] = 1;
+      const indices = weights.flatMap((weight, index) => weight !== 0 ? [index] : []);
       if (isSelected && !indices.includes(target)) indices.push(target);
       const key = indices.join(',');
       if (data.key !== key) {
@@ -76,7 +82,8 @@ try {
         data.mesh.updateMorphTargets();
         data.key = key;
       }
-      indices.forEach((index, slot) => { data.mesh.morphTargetInfluences[slot] = isSelected && index === target ? Number($('weight').value) : data.weights[index]; });
+      indices.forEach((index, slot) => { data.mesh.morphTargetInfluences[slot] = index === data.locked ? 1 : isSelected && index === target ? Number($('weight').value) : weights[index]; });
+      if (data.locked !== undefined) $('pupil-value').value = String(data.mesh.morphTargetInfluences[indices.indexOf(data.locked)] * 100);
       data.mesh.boundingBox = null; data.mesh.boundingSphere = null;
     });
     $('weight-value').value = $('weight').value;
@@ -90,6 +97,53 @@ try {
     render();
   };
   scene.add(model); model.updateMatrixWorld(true);
+  // Animate full CPU weight arrays; the GPU uses a compact, independently indexed set.
+  const proxies = new Map();
+  for (const data of morphs) {
+    const proxy = new THREE.Object3D(); proxy.morphTargetInfluences = [...data.weights];
+    model.add(proxy); proxies.set(data.mesh.uuid, proxy); data.proxy = proxy;
+  }
+  const clips = gltf.animations.map(clip => {
+    const copy = clip.clone();
+    for (const track of copy.tracks) {
+      const binding = THREE.PropertyBinding.parseTrackName(track.name);
+      if (binding.propertyName !== 'morphTargetInfluences') continue;
+      const target = THREE.PropertyBinding.findNode(model, binding.nodeName);
+      const proxy = target && proxies.get(target.uuid);
+      if (!proxy) throw new Error(`Morph animation target not found: ${track.name}`);
+      track.name = `${proxy.uuid}.morphTargetInfluences${binding.propertyIndex === undefined ? '' : `[${binding.propertyIndex}]`}`;
+    }
+    return copy;
+  });
+  const mixer = new THREE.AnimationMixer(model);
+  let action, playing = false, frame = 0, previous = 0;
+  const syncAnimation = () => {
+    for (const data of morphs) data.animatedWeights = action ? data.proxy.morphTargetInfluences : null;
+    model.updateMatrixWorld(true);
+    for (const { mesh } of meshes) if (mesh.isSkinnedMesh) { mesh.skeleton.update(); mesh.boundingBox = null; mesh.boundingSphere = null; }
+    $('time').value = action?.time ?? 0; $('time-value').value = `${Number($('time').value).toFixed(2)} s`;
+    applyMorph();
+  };
+  const tick = now => {
+    frame = 0;
+    if (!playing || document.hidden || orientation.matches) { previous = 0; return; }
+    if (previous) mixer.update(Math.min((now - previous) / 1000, 0.1));
+    previous = now; syncAnimation(); frame = requestAnimationFrame(tick);
+  };
+  const pause = () => { playing = false; cancelAnimationFrame(frame); frame = 0; previous = 0; $('play').textContent = 'Play'; };
+  const resumeVisible = () => { previous = 0; if (playing && !frame) frame = requestAnimationFrame(tick); };
+  document.addEventListener('visibilitychange', resumeVisible); orientation.addEventListener('change', resumeVisible);
+  clips.forEach((clip, index) => $('animation').add(new Option(clip.name || `Clip ${index + 1}`, String(index))));
+  $('animation').onchange = () => {
+    pause(); mixer.stopAllAction(); action = undefined;
+    if ($('animation').value !== '') {
+      const clip = clips[Number($('animation').value)]; action = mixer.clipAction(clip); action.reset().play(); mixer.update(0);
+      $('time').max = Math.max(clip.duration, 0.01);
+    }
+    $('play').disabled = !action; $('time').disabled = !action; syncAnimation();
+  };
+  $('play').onclick = () => { if (playing) pause(); else if (action) { playing = true; $('play').textContent = 'Pause'; resumeVisible(); } };
+  $('time').oninput = () => { if (action) { pause(); action.time = Number($('time').value); mixer.update(0); syncAnimation(); } };
   const bounds = new THREE.Box3().setFromObject(model);
   const center = bounds.getCenter(new THREE.Vector3());
   const size = bounds.getSize(new THREE.Vector3());
@@ -101,6 +155,7 @@ try {
   $('skeleton').onchange = () => { skeleton.visible = $('skeleton').checked; render(); };
   for (const [id, data] of bones) $('bone').add(new Option(data.object.name, id));
   const applyBone = () => {
+    pause();
     for (const { object, quaternion } of bones.values()) object.quaternion.copy(quaternion);
     const data = bones.get($('bone').value);
     if (data) data.object.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), THREE.MathUtils.degToRad(Number($('angle').value))));
@@ -112,7 +167,7 @@ try {
   $('angle').oninput = applyBone;
   $('morph').onchange = () => { $('weight').value = 0; applyMorph(); };
   $('weight').oninput = applyMorph;
-  $('reset').onclick = () => { $('bone').value = ''; $('angle').value = 0; $('morph').value = ''; $('weight').value = 0; applyBone(); applyMorph(); };
+  $('reset').onclick = () => { $('animation').value = ''; $('animation').onchange(); $('bone').value = ''; $('angle').value = 0; $('morph').value = ''; $('weight').value = 0; applyBone(); applyMorph(); };
   $('material').onchange = () => {
     for (const entry of meshes) {
       entry.unlit ??= (Array.isArray(entry.material) ? entry.material : [entry.material]).map(material => new THREE.MeshBasicMaterial({ map: material.map, color: material.color, transparent: material.transparent, opacity: material.opacity, alphaTest: material.alphaTest, side: material.side }));
@@ -122,7 +177,7 @@ try {
   };
   document.querySelectorAll('[data-view]').forEach(button => { button.onclick = () => fit(Number(button.dataset.view)); });
   resize(); fit(); $('controls').disabled = false;
-  $('stats').textContent = `${meshes.length} render meshes · ${bones.size} bones · ${$('morph').options.length - 1} shape keys · ${gltf.animations.length} animations`;
+  $('stats').textContent = `${meshes.length} render meshes · ${bones.size} bones · ${$('morph').options.length - 1} editable shape keys · ${gltf.animations.length} animations`;
   status.textContent = 'ドラッグ：回転 · ホイール / ピンチ：拡大 · 右ドラッグ：移動';
   renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); status.textContent = 'GPU接続が失われました。ページを再読み込みしてください。'; });
 } catch (error) {

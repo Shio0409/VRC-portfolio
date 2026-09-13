@@ -54,6 +54,15 @@ try {
     if (index < 0) throw new Exception("BlendShape not found: " + entry);
     renderer.SetBlendShapeWeight(index, (float)entry["weight"]);
   }
+  var body = clone.transform.Find("Body").GetComponent<SkinnedMeshRenderer>();
+  var pupilIndex = body.sharedMesh.GetBlendShapeIndex("eye_pupil_OFF");
+  if (pupilIndex < 0) throw new Exception("Required Body / eye_pupil_OFF is missing.");
+  body.SetBlendShapeWeight(pupilIndex, 100);
+  // A selected clip must not override the permanent expression constraint.
+  foreach (var clip in clips) foreach (var binding in AnimationUtility.GetCurveBindings(clip)) {
+    if (binding.path == "Body" && binding.propertyName == "blendShape.eye_pupil_OFF")
+      throw new Exception("Remove the fixed eye_pupil_OFF curve from the selected Web clip: " + clip.name);
+  }
   // Reject bindings that would silently disappear after clothing/armature processing.
   foreach (var clip in clips) {
     if (AnimationUtility.GetObjectReferenceCurveBindings(clip).Length != 0) throw new Exception("Object/material switching is not supported: " + clip.name);

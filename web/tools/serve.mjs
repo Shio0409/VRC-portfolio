@@ -29,7 +29,10 @@ if (avatar) {
     publicFiles.set(`/avatar/${name}`, `tools/avatar/${name}`);
   }
   publicFiles.set('/avatar/', 'tools/avatar/viewer.html');
-  publicFiles.set('/avatar/model.glb', '.local/avatar/kipfel-web-preview-1k.glb');
+  const modelArgument = process.argv.indexOf('--avatar-model');
+  const modelName = modelArgument < 0 ? 'kipfel-web-preview-1k.glb' : process.argv[modelArgument + 1];
+  if (!modelName || !/^[a-zA-Z0-9_-]+\.glb$/.test(modelName)) throw new Error('Use a GLB filename in web/.local/avatar for --avatar-model');
+  publicFiles.set('/avatar/model.glb', `.local/avatar/${modelName}`);
   for (const name of ['build/three.module.js', 'build/three.core.js', 'examples/jsm/loaders/GLTFLoader.js', 'examples/jsm/controls/OrbitControls.js', 'examples/jsm/utils/BufferGeometryUtils.js']) {
     publicFiles.set(`/avatar/vendor/${name}`, `.local/three/package/${name}`);
   }
