@@ -6,10 +6,11 @@ import path from 'node:path';
 
 const project = fileURLToPath(new URL('../', import.meta.url));
 const built = process.argv.includes('--dist');
+const avatar = !built && process.argv.includes('--avatar');
 const root = built ? path.join(project, 'dist') : project;
 const portArgument = process.argv.indexOf('--port');
 const port = portArgument >= 0 ? Number(process.argv[portArgument + 1]) : 4173;
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.glb': 'model/gltf-binary' };
 
 // Serve only the public web surface. Unity, original documents, and tooling stay private.
 const publicFiles = new Map([
@@ -21,6 +22,18 @@ const publicFiles = new Map([
   ['/assets/cursor-normal.svg', 'assets/cursor-normal.svg'],
   ['/assets/cursor-hover.svg', 'assets/cursor-hover.svg'],
 ]);
+
+// Explicit local inspection routes; never included in production or normal preview.
+if (avatar) {
+  for (const name of ['viewer.html', 'viewer.css', 'viewer.js']) {
+    publicFiles.set(`/avatar/${name}`, `tools/avatar/${name}`);
+  }
+  publicFiles.set('/avatar/', 'tools/avatar/viewer.html');
+  publicFiles.set('/avatar/model.glb', '.local/avatar/kipfel-web-preview-1k.glb');
+  for (const name of ['build/three.module.js', 'build/three.core.js', 'examples/jsm/loaders/GLTFLoader.js', 'examples/jsm/controls/OrbitControls.js', 'examples/jsm/utils/BufferGeometryUtils.js']) {
+    publicFiles.set(`/avatar/vendor/${name}`, `.local/three/package/${name}`);
+  }
+}
 
 const server = createServer(async (request, response) => {
   if (request.method !== 'GET' && request.method !== 'HEAD') {

@@ -103,3 +103,7 @@ node tools/serve.mjs --dist
 ブラウザ上の最終的な見た目・端末実機での挙動は、プレビューでの確認事項です。
 
 `tests/viewport.test.js`は初期表示、縦向きでの操作制御、回転後の現在画面への復帰、イベント解除を検証します。
+
+## アバターのローカル確認
+
+`tools/avatar/README.md`にGLBの準備とThree.js確認ビューアーの起動方法をまとめています。`node tools/serve.mjs --avatar --port 4174`で確認画面を有効にできます。通常のサイト・公開ビルドには含まれません。
