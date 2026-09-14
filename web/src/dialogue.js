@@ -9,6 +9,13 @@ export const dialogueLines = [
 export function setupDialogue(root) {
   const button = root.querySelector('#dialogue');
   const text = root.querySelector('#dialogue-text');
+  const sizing = root.querySelector('#dialogue-sizing');
+  // Overlay every full line invisibly so typing and advancing never resize the avatar canvas.
+  for (const line of dialogueLines) {
+    const span = document.createElement('span');
+    span.textContent = line;
+    sizing.append(span);
+  }
   const accessible = root.querySelector('#dialogue-accessible');
   const count = root.querySelector('#dialogue-count');
   const hint = root.querySelector('#dialogue-hint');
@@ -20,7 +27,7 @@ export function setupDialogue(root) {
   function render() {
     text.textContent = characters().slice(0, letters).join('');
     accessible.textContent = dialogueLines[line];
-    count.textContent = `${String(line + 1).padStart(2, '0')} / 04`;
+    count.textContent = `${String(line + 1).padStart(2, '0')} / ${String(dialogueLines.length).padStart(2, '0')}`;
     hint.textContent = !complete() ? '全文表示 ▸' : line === dialogueLines.length - 1 ? 'もう一度 ↺' : '次へ ▸';
     button.setAttribute('aria-label', !complete() ? 'セリフを全文表示する' : line === dialogueLines.length - 1 ? '会話を最初から読む' : '次のセリフを読む');
     root.dataset.speaking = String(visible && !complete() && !document.hidden && !portrait.matches);

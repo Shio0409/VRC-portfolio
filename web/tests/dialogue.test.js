@@ -5,10 +5,13 @@ import { setupDialogue, dialogueLines } from '../src/dialogue.js';
 function fixture(t, reduce = false) {
   class Element extends EventTarget {
     textContent = ''; attributes = {};
+    children = [];
+    append(child) { this.children.push(child); }
     setAttribute(key, value) { this.attributes[key] = value; }
     click() { this.dispatchEvent(new Event('click')); }
   }
   const document = new EventTarget(); document.hidden = false;
+  document.createElement = () => new Element();
   const reduced = new EventTarget(); reduced.matches = reduce;
   const portrait = new EventTarget(); portrait.matches = false;
   const previous = {document: globalThis.document, matchMedia: globalThis.matchMedia};
@@ -16,7 +19,7 @@ function fixture(t, reduce = false) {
   globalThis.matchMedia = query => query.includes('reduced-motion') ? reduced : portrait;
   t.after(() => Object.assign(globalThis, previous));
   t.mock.timers.enable({apis:['setTimeout']});
-  const elements = Object.fromEntries(['dialogue','dialogue-text','dialogue-accessible','dialogue-count','dialogue-hint'].map(id => [id, new Element()]));
+  const elements = Object.fromEntries(['dialogue','dialogue-sizing','dialogue-text','dialogue-accessible','dialogue-count','dialogue-hint'].map(id => [id, new Element()]));
   const root = {dataset:{}, querySelector: selector => elements[selector.slice(1)]};
   const dialogue = setupDialogue(root);
   t.after(() => dialogue.setVisible(false));

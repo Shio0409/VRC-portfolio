@@ -1,5 +1,6 @@
 import { skills } from './skills.js';
 import { setupDialogue } from './dialogue.js';
+import { setupTopBackground } from './top-background.js';
 
 const icons = {
   user: '<circle cx="12" cy="7" r="3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/>',
@@ -13,8 +14,7 @@ const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
 
 export function setupTop(root) {
   const dialogue = setupDialogue(root);
-  const world = document.getElementById('top-world');
-  const worldImage = document.getElementById('top-world-image');
+  const background = setupTopBackground(document.getElementById('top-world'), document.getElementById('top-world-image'));
   const menu = root.querySelector('#skill-menu');
   const open = root.querySelector('#skill-open');
   const close = root.querySelector('#skill-close');
@@ -70,8 +70,7 @@ export function setupTop(root) {
   return {
     openSkills: () => setOpen(true),
     setVisible(value) {
-      world.hidden = !value;
-      if (value && !worldImage.hasAttribute('src')) worldImage.src = new URL('../assets/top-world.webp', import.meta.url).href;
+      background.setVisible(value);
       dialogue.setVisible(value);
     },
     reset: () => { select(0); setOpen(true, false); },
