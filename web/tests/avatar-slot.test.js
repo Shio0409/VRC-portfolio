@@ -10,6 +10,16 @@ function fixture(loader) {
   const slot=setupAvatarSlot({querySelector: selector=>elements[selector.slice(1)]},()=>opened++,loader);
   return {slot,elements,opened:()=>opened};
 }
+
+test('latest pointer view is applied when loading completes and subsequent motion reaches the scene',async()=>{
+  const views=[];
+  const f=fixture(async()=>({createAvatarScene:async()=>({dispose(){},setView:(x,y)=>views.push([x,y])})}));
+  f.slot.setVisible(true); f.slot.setView(.5,-.4); await flush();
+  assert.deepEqual(views.at(-1),[.5,-.4]);
+  f.slot.setView(-.7,.2); assert.deepEqual(views.at(-1),[-.7,.2]);
+  f.slot.setVisible(false); const count=views.length;
+  f.slot.setView(0,0); assert.equal(views.length,count);
+});
 test('Three.js is deferred until TOP; ready avatar opens skills and leaving releases scene once',async()=>{
   let imports=0,disposed=0;
   const f=fixture(async()=>{imports++;return {createAvatarScene:async()=>({dispose:()=>disposed++})};});

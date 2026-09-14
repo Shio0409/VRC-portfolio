@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-/** One disposable TOP scene. No idle loop until an animation is actually selected. */
+/** One disposable TOP scene; renders on resize and smoothed pointer updates. */
 export async function createAvatarScene({ canvas, signal }) {
   let renderer, model, observer;
   const geometries = new Set(), materials = new Set(), textures = new Set();
@@ -68,16 +68,26 @@ export async function createAvatarScene({ canvas, signal }) {
     const fill = new THREE.DirectionalLight(0xb9ddff,1); fill.position.set(-2,1,-2); scene.add(fill);
     model.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(model), center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+    let distance = 1, viewX = 0, viewY = 0;
+    const orbit = () => {
+      // A 30-degree cone in any direction, rather than rotating the avatar itself.
+      const magnitude = Math.min(1, Math.hypot(viewX, viewY));
+      const angle = magnitude * Math.PI / 6;
+      const factor = magnitude ? Math.sin(angle) / Math.hypot(viewX, viewY) : 0;
+      camera.position.set(center.x + distance * viewX * factor, center.y + distance * viewY * factor, center.z + distance * Math.cos(angle));
+      camera.lookAt(center); draw();
+    };
     const resize = () => {
       if (disposed) return;
       const { width, height } = canvas.getBoundingClientRect();
       if (!width || !height) return;
       renderer.setSize(width, height, false); camera.aspect = width / height;
-      const distance = Math.max(size.y, size.x / camera.aspect) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) * 1.08 + size.z / 2;
-      camera.position.set(center.x, center.y, center.z + distance); camera.lookAt(center); camera.updateProjectionMatrix(); draw();
+      // Keep framing readable while reserving a margin for the camera tilt.
+      distance = Math.max(size.y, size.x / camera.aspect) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) * 1.14 + size.z / 2;
+      camera.updateProjectionMatrix(); orbit();
     };
     observer = new ResizeObserver(resize); observer.observe(canvas);
     document.addEventListener('visibilitychange', draw); resize();
-    return { dispose };
+    return { dispose, setView(x,y) { if (disposed) return; viewX=x; viewY=y; orbit(); } };
   } catch (error) { dispose(); throw error; }
 }

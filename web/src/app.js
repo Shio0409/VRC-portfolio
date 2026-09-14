@@ -4,6 +4,7 @@ import { setupOrientationGate } from './viewport.js';
 import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
+import { setupTopParallax } from './top-parallax.js';
 
 const byId = (id) => document.getElementById(id);
 const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen') };
@@ -30,12 +31,17 @@ setupOrientationGate({
 const top = setupTop(screens.top);
 const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
+const parallax = setupTopParallax((x,y) => {
+  avatar.setView(x,y);
+  byId('top-world-image').style.transform = `translate3d(${-x*3}%, ${y*3}%, 0) scale(1.12)`;
+});
 function showScreen(name) {
   shell.dataset.screen = name;
   for (const [key, screen] of Object.entries(screens)) screen.hidden = key !== name;
   avatar.setVisible(name === 'top');
   top.setVisible(name === 'top');
   career.setVisible(name === 'career');
+  parallax.setVisible(name === 'top');
 }
 document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => {
   if (flow.getState().phase !== 'top') return;
