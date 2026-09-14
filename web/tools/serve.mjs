@@ -20,6 +20,7 @@ const publicFiles = new Map([
   ['/src/viewport.css', 'src/viewport.css'], ['/src/viewport.js', 'src/viewport.js'],
   ['/src/entry-flow.js', 'src/entry-flow.js'], ['/src/assets.js', 'src/assets.js'],
   ['/src/top.css', 'src/top.css'], ['/src/top.js', 'src/top.js'], ['/src/skills.js', 'src/skills.js'],
+  ['/src/section-navigation.js', 'src/section-navigation.js'],
   ['/src/portal.js', 'src/portal.js'],
   ['/src/top-parallax.js', 'src/top-parallax.js'],
   ['/src/top-background.js', 'src/top-background.js'],

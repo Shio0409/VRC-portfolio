@@ -6,6 +6,7 @@ import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
 import { setupTopParallax } from './top-parallax.js';
 import { setupPortal } from './portal.js';
+import { setupSectionNavigation } from './section-navigation.js';
 
 const byId = (id) => document.getElementById(id);
 const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen') };
@@ -50,22 +51,28 @@ function showScreen(name) {
   career.setVisible(name === 'career');
   parallax.setVisible(name === 'top');
 }
-document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => {
-  if (flow.getState().phase !== 'top') return;
-  if (shell.dataset.screen === button.dataset.section) return;
-  showScreen(button.dataset.section);
-  portal.play();
-  if (!shell.inert) headings[button.dataset.section].focus({preventScroll:true});
+const navigation = setupSectionNavigation({
+  canNavigate: () => flow.getState().phase === 'top',
+  getCurrent: () => shell.dataset.screen,
+  onNavigate(name) {
+    showScreen(name); portal.play();
+    if (!shell.inert) headings[name].focus({preventScroll:true});
+  },
+});
+document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', event => {
+  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+  event.preventDefault(); navigation.navigate(button.dataset.section);
 }));
 let previousPhase;
 let previousLoadingMessage;
 let previousUrl;
 let previousSound = false;
 flow.subscribe((state) => {
-  const visibleScreen = state.phase === 'error' ? 'loading' : state.phase;
+  const visibleScreen = state.phase === 'error' ? 'loading' : state.phase === 'top' ? navigation.requested() : state.phase;
   if (state.phase !== previousPhase) {
     if (state.phase === 'entry') { top.reset(); career.reset(); }
     showScreen(visibleScreen);
+    if (state.phase === 'top') navigation.sync(visibleScreen,true);
     byId('sound-control').hidden = state.phase === 'entry';
     const failed = state.phase === 'error';
     screens.loading.dataset.error = String(failed);
@@ -117,7 +124,7 @@ byId('sound-on').addEventListener('click', () => flow.start(true));
 byId('sound-off').addEventListener('click', () => flow.start(false));
 byId('skip-button').addEventListener('click', () => flow.skip());
 byId('retry-button').addEventListener('click', () => flow.retry());
-byId('return-button').addEventListener('click', () => flow.reset());
+byId('return-button').addEventListener('click', () => { navigation.sync('top',true); flow.reset(); });
 soundButton.addEventListener('click', () => flow.setSound(!flow.getState().soundEnabled));
 // Stop work on exit; a restored back-forward-cache page starts with the sound choice again.
 window.addEventListener('pagehide', () => flow.reset());

@@ -5,7 +5,7 @@ import { avatarPublicFiles } from './avatar-public-files.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'dist');
-const files = ['index.html', 'favicon.svg', 'src/styles.css', 'src/viewport.css', 'src/app.js', 'src/viewport.js', 'src/entry-flow.js', 'src/assets.js', 'src/top.css', 'src/top.js', 'src/skills.js', 'src/dialogue.js', 'src/top-background.js', 'src/top-parallax.js', 'src/portal.js', 'assets/top-world.webp', 'assets/cursor-normal.svg', 'assets/cursor-hover.svg'];
+const files = ['index.html', 'favicon.svg', 'src/styles.css', 'src/viewport.css', 'src/app.js', 'src/viewport.js', 'src/entry-flow.js', 'src/assets.js', 'src/top.css', 'src/top.js', 'src/skills.js', 'src/dialogue.js', 'src/top-background.js', 'src/top-parallax.js', 'src/portal.js', 'src/section-navigation.js', 'assets/top-world.webp', 'assets/cursor-normal.svg', 'assets/cursor-hover.svg'];
 files.push(...avatarPublicFiles, 'src/career.css', 'src/career.js', 'src/career-data.js', 'src/career-clock.js');
 await mkdir(path.join(output, 'src'), { recursive: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });

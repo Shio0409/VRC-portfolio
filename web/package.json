@@ -9,6 +9,6 @@
     "build": "node tools/build.mjs",
     "preview": "node tools/serve.mjs --dist",
     "test": "node --test tests/*.test.js",
-    "check": "node --check src/app.js && node --check src/entry-flow.js && node --check src/assets.js && node --check src/viewport.js && node --check src/top.js && node --check src/skills.js && node --check src/dialogue.js && node --check src/top-background.js && node --check src/top-parallax.js && node --check src/portal.js && node --check src/career.js && node --check src/career-clock.js && node --check src/career-data.js && node --check src/avatar-slot.js && node --check src/avatar-scene.js"
+    "check": "node --check src/app.js && node --check src/entry-flow.js && node --check src/assets.js && node --check src/viewport.js && node --check src/top.js && node --check src/skills.js && node --check src/dialogue.js && node --check src/top-background.js && node --check src/top-parallax.js && node --check src/portal.js && node --check src/section-navigation.js && node --check src/career.js && node --check src/career-clock.js && node --check src/career-data.js && node --check src/avatar-slot.js && node --check src/avatar-scene.js"
   }
 }
