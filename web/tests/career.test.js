@@ -9,6 +9,7 @@ test('career controls connect chapters, seek, reading pause, expansion and re-en
     classList={values:new Set(), toggle(name,value){if(value)this.values.add(name);else this.values.delete(name);}, contains(name){return this.values.has(name);}};
     append(child){this.children.push(child);}
     replaceChildren(){this.children=[];}
+    getAttribute(name){return this.attributes[name];}
     setAttribute(name,value){this.attributes[name]=value;}
     removeAttribute(name){delete this.attributes[name];}
     click(){this.dispatchEvent(new Event('click'));}
@@ -28,6 +29,8 @@ test('career controls connect chapters, seek, reading pause, expansion and re-en
   const seek=query('#career-seek'); seek.value=48; seek.dispatchEvent(new Event('input'));
   assert.equal(query('#career-heading').textContent,'プログラミング教室 主任講師');
   assert.equal(query('#career-year').textContent,'2022');
+  const key=new Event('keydown',{cancelable:true}); Object.defineProperty(key,'key',{value:'ArrowRight'}); seek.dispatchEvent(key);
+  assert.equal(Number(seek.value),53); assert.equal(key.defaultPrevented,true);
   query('#career-slide').focus(); assert.equal(query('#career-play').attributes['aria-label'],'再生');
   query('#career-expand').click(); assert.equal(query('#career-player').classList.contains('is-expanded'),true);
   assert.equal(query('.career-intro').inert,true);

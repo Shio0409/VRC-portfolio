@@ -1,6 +1,8 @@
 import { careerChapters as chapters } from './career-data.js';
 import { createCareerClock, chapterAt } from './career-clock.js';
 
+const playerIcon = playing => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${playing ? '<path d="M8 5v14M16 5v14"/>' : '<path d="m8 4 12 8-12 8Z"/>'}</svg>`;
+
 export function setupCareer(root) {
   const get = id => root.querySelector(`#${id}`);
   const player = get('career-player'), content = get('career-content');
@@ -27,7 +29,8 @@ export function setupCareer(root) {
     seek.style.setProperty('--played', `${state.time / duration * 100}%`);
     seek.setAttribute('aria-valuetext', `${format(state.time)} / ${format(duration)}、${chapter.year} ${chapter.title}`);
     get('career-time').textContent = `${format(state.time)} / ${format(duration)}`;
-    play.textContent = state.playing ? 'Ⅱ' : '▶';
+    const playLabel = state.playing ? '一時停止' : state.time === duration ? '最初から再生' : '再生';
+    if (play.getAttribute('aria-label') !== playLabel) play.innerHTML = playerIcon(state.playing);
     play.setAttribute('aria-label', state.playing ? '一時停止' : state.time === duration ? '最初から再生' : '再生');
     get('career-prev').disabled = index === 0;
     get('career-next').disabled = index === chapters.length - 1;
@@ -62,6 +65,13 @@ export function setupCareer(root) {
   }
   play.addEventListener('click', () => clock.getState().playing ? clock.pause() : clock.play());
   seek.addEventListener('input', () => clock.seek(Number(seek.value)));
+  seek.addEventListener('keydown', event => {
+    const deltas = {ArrowLeft:-5,ArrowDown:-5,ArrowRight:5,ArrowUp:5};
+    if (!(event.key in deltas)) return;
+    event.preventDefault(); clock.seek(clock.getState().time + deltas[event.key]);
+  });
+  seek.setAttribute('aria-description', '左右キーで5秒ずつ移動。Homeで先頭、Endで末尾へ移動。');
+  play.innerHTML = playerIcon(false);
   get('career-prev').addEventListener('click', () => clock.seek(starts[Math.max(0, selected - 1)]));
   get('career-next').addEventListener('click', () => clock.seek(starts[Math.min(chapters.length - 1, selected + 1)]));
   expand.addEventListener('click', () => setExpanded(!player.classList.contains('is-expanded')));

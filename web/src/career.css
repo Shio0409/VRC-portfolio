@@ -45,3 +45,6 @@
 .career-slide:focus-visible, #career-seek:focus-visible { outline:2px solid #ddffff; outline-offset:3px; }
 
 @supports not (backdrop-filter:blur(1px)) { .career-player { background:#091f30f5; } }
+
+.career-controls button { display:grid; place-items:center; }
+.career-controls button svg { width:21px; height:21px; }

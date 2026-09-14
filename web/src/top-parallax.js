@@ -1,6 +1,6 @@
 export function pointerView(x, y, width, height) {
-  const nx = Math.max(-1, Math.min(1, x / Math.max(1, width) * 2 - 1));
-  const ny = Math.max(-1, Math.min(1, 1 - y / Math.max(1, height) * 2));
+  const nx = Math.max(-1, Math.min(1, 1 - x / Math.max(1, width) * 2));
+  const ny = Math.max(-1, Math.min(1, y / Math.max(1, height) * 2 - 1));
   const length = Math.max(1, Math.hypot(nx, ny));
   return { x:nx / length, y:ny / length };
 }
