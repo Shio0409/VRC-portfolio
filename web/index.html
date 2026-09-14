@@ -14,6 +14,7 @@
     <script type="module" src="./src/app.js"></script>
   </head>
   <body>
+    <div class="top-world" id="top-world" aria-hidden="true" hidden><img id="top-world-image" alt="" decoding="async" /></div>
     <div class="atmosphere" aria-hidden="true">
       <i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i>
       <i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i>
@@ -129,6 +130,12 @@
           <div class="avatar-stage" aria-label="Sioの3Dアバター">
             <div class="avatar-orbit" aria-hidden="true"></div>
             <div class="avatar-nameplate"><span class="status-dot" aria-hidden="true"></span>sio0409</div>
+            <button class="dialogue" id="dialogue" type="button" aria-label="セリフを全文表示する" aria-describedby="dialogue-accessible">
+              <span class="dialogue-speaker"><span class="status-dot" aria-hidden="true"></span>sio0409</span>
+              <span class="dialogue-text" id="dialogue-text" aria-hidden="true"></span>
+              <span class="sr-only" id="dialogue-accessible"></span>
+              <span class="dialogue-footer" aria-hidden="true"><span id="dialogue-count">01 / 04</span><span id="dialogue-hint">全文表示 ▸</span></span>
+            </button>
             <div id="top-avatar-mount" class="avatar-mount">
               <button type="button" id="avatar-button" class="avatar-button" disabled aria-label="アバターを選択してスキルメニューを開く" aria-controls="skill-menu"><canvas id="top-avatar-canvas" aria-hidden="true"></canvas></button>
               <div class="avatar-feedback"><p id="avatar-message" role="status">アバターを読み込んでいます…</p><button type="button" class="button" id="avatar-retry" hidden>再試行</button></div>

@@ -39,6 +39,7 @@ flow.subscribe((state) => {
     if (state.phase === 'entry') top.reset();
     for (const [name, screen] of Object.entries(screens)) screen.hidden = name !== visibleScreen;
     avatar.setVisible(visibleScreen === 'top');
+    top.setVisible(visibleScreen === 'top');
     byId('sound-control').hidden = state.phase === 'entry';
     const failed = state.phase === 'error';
     screens.loading.dataset.error = String(failed);

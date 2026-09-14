@@ -11,7 +11,7 @@ const avatar = !built && process.argv.includes('--avatar');
 const root = built ? path.join(project, 'dist') : project;
 const portArgument = process.argv.indexOf('--port');
 const port = portArgument >= 0 ? Number(process.argv[portArgument + 1]) : 4173;
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.glb': 'model/gltf-binary' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.glb': 'model/gltf-binary' };
 
 // Serve only the public web surface. Unity, original documents, and tooling stay private.
 const publicFiles = new Map([
@@ -20,6 +20,7 @@ const publicFiles = new Map([
   ['/src/viewport.css', 'src/viewport.css'], ['/src/viewport.js', 'src/viewport.js'],
   ['/src/entry-flow.js', 'src/entry-flow.js'], ['/src/assets.js', 'src/assets.js'],
   ['/src/top.css', 'src/top.css'], ['/src/top.js', 'src/top.js'], ['/src/skills.js', 'src/skills.js'],
+  ['/src/dialogue.js', 'src/dialogue.js'], ['/assets/top-world.webp', 'assets/top-world.webp'],
   ['/assets/playing.png', 'assets/playing.png'],
   ['/assets/cursor-normal.svg', 'assets/cursor-normal.svg'],
   ['/assets/cursor-hover.svg', 'assets/cursor-hover.svg'],
