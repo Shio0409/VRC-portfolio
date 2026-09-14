@@ -1,6 +1,7 @@
 import { createEntryFlow } from './entry-flow.js';
 import { loadInitialAssets } from './assets.js';
 import { setupOrientationGate } from './viewport.js';
+import { setupTop } from './top.js';
 
 const byId = (id) => document.getElementById(id);
 const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen') };
@@ -24,6 +25,7 @@ setupOrientationGate({
   getResumeTarget: () => flow.getState().phase === 'error' ? byId('retry-button') : headings[flow.getState().phase],
 });
 
+const top = setupTop(screens.top);
 let previousPhase;
 let previousLoadingMessage;
 let previousUrl;
@@ -31,6 +33,8 @@ let previousSound = false;
 flow.subscribe((state) => {
   const visibleScreen = state.phase === 'error' ? 'loading' : state.phase;
   if (state.phase !== previousPhase) {
+    shell.dataset.screen = visibleScreen;
+    if (state.phase === 'entry') top.reset();
     for (const [name, screen] of Object.entries(screens)) screen.hidden = name !== visibleScreen;
     byId('sound-control').hidden = state.phase === 'entry';
     const failed = state.phase === 'error';

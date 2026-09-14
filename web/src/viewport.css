@@ -68,7 +68,7 @@ main { grid-column: 2; display: grid; place-items: center; min-width: 0; }
 .orientation-gate { display: none; }
 /* Match the app's query: a narrow portrait touch viewport, not a narrow PC window. */
 @media (pointer: coarse) and (max-width: 767px) and (orientation: portrait) {
-  .site-shell { display: none; }
+  .site-shell, #site-shell { display: none; }
   .orientation-gate {
     position: fixed;
     inset: 0;

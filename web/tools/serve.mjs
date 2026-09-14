@@ -18,6 +18,7 @@ const publicFiles = new Map([
   ['/src/styles.css', 'src/styles.css'], ['/src/app.js', 'src/app.js'],
   ['/src/viewport.css', 'src/viewport.css'], ['/src/viewport.js', 'src/viewport.js'],
   ['/src/entry-flow.js', 'src/entry-flow.js'], ['/src/assets.js', 'src/assets.js'],
+  ['/src/top.css', 'src/top.css'], ['/src/top.js', 'src/top.js'], ['/src/skills.js', 'src/skills.js'],
   ['/assets/playing.png', 'assets/playing.png'],
   ['/assets/cursor-normal.svg', 'assets/cursor-normal.svg'],
   ['/assets/cursor-hover.svg', 'assets/cursor-hover.svg'],

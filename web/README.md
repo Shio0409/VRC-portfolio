@@ -1,6 +1,6 @@
 # Sio's Portfolio — Web
 
-初回実装は **Sound選択 → 00 Loading → 仮TOP** です。サイト全体の基準はプロジェクトルートの「portfolio sitedesign.md」を参照してください。
+現在の実装は **Sound選択 → 00 Loading → 01 TOP / Skill Menu** です。TOPの3D表示は未接続です。サイト全体の基準はプロジェクトルートの「portfolio sitedesign.md」を参照してください。
 
 ## 技術構成
 
@@ -40,7 +40,7 @@ node tools/serve.mjs --dist
 | entry | Muteから開始。Sound ON / OFFの明示操作でloadingへ |
 | loading | 画像の転送・デコード完了と最低2秒を待ち、両方成立後topへ |
 | error | 再試行またはSKIPを提示。再試行時は読込と2秒の計測を再開 |
-| top | 許可された仮表示。ENTRYへ戻って再確認可能 |
+| top | TOPレイアウト・6カテゴリのSkill Menu。ENTRYへ戻って再確認可能 |
 
 - SKIPは最低表示時間や読込完了を待たずtopへ移動し、進行中の通信・フレーム更新を中止。
 - 古い通信の成功・失敗が、SKIP後や再試行後の画面を上書きしない。
@@ -75,7 +75,7 @@ node tools/serve.mjs --dist
 - `portfolio:sound-change`イベントで`detail.enabled`を通知し、後から音源を接続可能。
 - LocalStorageへの保存は実装していない。保存・復元方針は未確定のまま。
 - Global Soundと動画プレイヤーの優先関係は、動画実装時に確認。
-- TOPは仮表示であり、未ロードアバターの最終Fallbackは決めていない。
+- TOPの3D表示は未接続であり、未ロードアバターの最終Fallbackは決めていない。
 - 共通Navigation、アバター、CAREER、WORKS、CONTACTは今回の範囲外。
 - GitHub Pages公開・DNS変更は未実施。
 
@@ -104,6 +104,18 @@ node tools/serve.mjs --dist
 
 `tests/viewport.test.js`は初期表示、縦向きでの操作制御、回転後の現在画面への復帰、イベント解除を検証します。
 
-## アバターのローカル確認
+## 01 TOP / Skill Menu（2026-09-14）
+
+Loading・SKIPの移動先にTOPのレイアウトとSkill Menuを実装しました。`src/top.css`が左Navigation・中央の3D配置領域・右Skill Menuの構成を持ち、`src/skills.js`が仕様書9〜14項に基づく6カテゴリの内容を保持します。`src/top.js`がタブ・開閉・フォーカスを制御します。更新する文章はデータファイルに集約しています。
+
+初期USER・メニュー開。カテゴリは下部6タブのみで切り替えます。左右キー・Home/End対応、Escapeと×で閉じ、SKILL MENUボタンで再表示します。再表示は選択カテゴリを維持し、ENTRYへ戻った場合はUSERへリセットします。将来のアバタークリックは`setupTop()`の`openSkills()`へ接続できます。
+
+今回の範囲はレイアウト・スキル内容・操作までです。中央のGLB描画、実アバター画像のプロフィールアイコン、会話、Portal移動は未接続です。プロフィールは汎用の人物アイコンを使用しています。CAREER/WORKS/CONTACTのNavigationは「準備中」の無効ボタンとして表示しています。Navigationの見た目はコンセプトに基づく暫定案です。
+
+PCとスマートフォン横画面で同じ3列構成を使用します。高さの小さい画面では左の紹介・NavigationとSkill本文をそれぞれスクロールでき、6タブは固定表示します。縦向きの制御は共通`viewport.js`と`viewport.css`を継続使用します。
+
+検証：LoadingからのTOP表示、DEV切り替え、EndキーでMANAGEへ移動、閉じる・再表示時の選択維持、844×390での配置をブラウザで確認。既存のLoading/Orientation 14テスト成功。公開ビルドは14ファイルで、Three.jsとGLBはまだ含みません。
+
+### アバター確認用ツール
 
 `tools/avatar/README.md`にGLBの準備とThree.js確認ビューアーの起動方法をまとめています。`node tools/serve.mjs --avatar --port 4174`で確認画面を有効にできます。通常のサイト・公開ビルドには含まれません。

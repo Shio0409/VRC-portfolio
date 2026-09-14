@@ -9,6 +9,7 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./src/styles.css" />
     <link rel="stylesheet" href="./src/viewport.css" />
+    <link rel="stylesheet" href="./src/top.css" />
     <script type="module" src="./src/app.js"></script>
   </head>
   <body>
@@ -109,11 +110,37 @@
         </section>
 
         <section class="screen top-screen" id="top-screen" aria-labelledby="top-title" hidden>
-          <p class="eyebrow" lang="en">01 TOP</p>
-          <h1 id="top-title" tabindex="-1" lang="en">Sio's Portfolio</h1>
-          <span class="arrival-line" aria-hidden="true"></span>
-          <p class="top-note">TOPページは、これから制作します。</p>
-          <button class="button return-button" id="return-button" type="button">ENTRYへ戻る</button>
+          <div class="top-intro">
+            <h1 id="top-title" tabindex="-1" lang="en">01 TOP</h1>
+            <p class="top-byline" lang="en">Sio's Portfolio<br />by Sio0409</p>
+            <p class="top-tagline">VRで出会う、<br />もうひとつのわたし。</p>
+            <p class="top-caption">企画・制作・技術・運営。<br />アイデアを、動く形へ。</p>
+            <nav class="world-nav" aria-label="サイト内ナビゲーション">
+              <ol>
+                <li><a href="#top-title" aria-current="page"><span>01</span> TOP</a></li>
+                <li><button type="button" disabled><span>02</span> CAREER <small>準備中</small></button></li>
+                <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
+                <li><button type="button" disabled><span>04</span> CONTACT <small>準備中</small></button></li>
+              </ol>
+            </nav>
+            <button class="button return-button" id="return-button" type="button">ENTRYへ戻る ↗</button>
+          </div>
+          <div class="avatar-stage" aria-label="アバターの表示領域（3Dは次の工程で接続）">
+            <div class="avatar-orbit" aria-hidden="true"></div>
+            <div class="avatar-nameplate"><span class="status-dot" aria-hidden="true"></span>sio0409</div>
+            <div id="top-avatar-mount" class="avatar-mount"></div>
+            <div class="avatar-platform" aria-hidden="true"></div>
+          </div>
+          <aside id="skill-menu" class="skill-menu" aria-label="スキルメニュー">
+            <header class="skill-header">
+              <span class="profile-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="7" r="4"/><path d="M4 23v-3a8 8 0 0 1 16 0v3"/></svg></span>
+              <div class="skill-identity"><strong>sio0409</strong><p><span class="status-dot" aria-hidden="true"></span>お気軽にご連絡ください！</p></div>
+              <button class="skill-close" id="skill-close" type="button" aria-label="スキルメニューを閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 4 16 16M4 20 20 4"/></svg></button>
+            </header>
+            <div class="skill-panels" id="skill-panels"></div>
+            <div id="skill-tabs" class="skill-tabs" role="tablist" aria-label="スキルカテゴリ"></div>
+          </aside>
+          <button type="button" id="skill-open" class="button skill-open" aria-controls="skill-menu" aria-expanded="true" hidden>SKILL MENU ＋</button>
         </section>
       </main>
 
