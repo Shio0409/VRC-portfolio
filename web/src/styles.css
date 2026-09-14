@@ -160,3 +160,8 @@ p, h1, figure { margin: 0; }
   .progress-fill { background: Highlight; forced-color-adjust: none; }
   .choice, .button, .sound-toggle { border-color: ButtonText; }
 }
+
+
+/* A short, non-interactive passage of light between sections. */
+.portal-transition { position:fixed; left:50%; top:50%; width:150vmax; height:150vmax; z-index:15; pointer-events:none; border-radius:50%; transform:translate(-50%,-50%); border:2px solid #9ff8ff80; background:radial-gradient(circle,transparent 44%,#3ebfce0a 47%,#61dbe52e 49%,#b7fcff99 49.8%,#1b687c24 50.5%,transparent 56%); box-shadow:inset 0 0 50px #57dfe524,0 0 60px #56cad51a; }
+@media (prefers-reduced-motion:reduce), (forced-colors:active) { .portal-transition { display:none; } }

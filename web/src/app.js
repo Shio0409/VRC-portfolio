@@ -5,6 +5,7 @@ import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
 import { setupTopParallax } from './top-parallax.js';
+import { setupPortal } from './portal.js';
 
 const byId = (id) => document.getElementById(id);
 const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen') };
@@ -31,6 +32,7 @@ setupOrientationGate({
 const top = setupTop(screens.top);
 const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
+const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
   avatar.setView(x,y);
   byId('top-world-image').style.transform = `translate3d(${-x*3}%, ${y*3}%, 0) scale(1.12)`;
@@ -40,6 +42,7 @@ const parallax = setupTopParallax((x,y) => {
   screens.top.style.setProperty('--reflection-y', `${35 - y * 20}%`);
 });
 function showScreen(name) {
+  portal.cancel();
   shell.dataset.screen = name;
   for (const [key, screen] of Object.entries(screens)) screen.hidden = key !== name;
   avatar.setVisible(name === 'top');
@@ -49,7 +52,9 @@ function showScreen(name) {
 }
 document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => {
   if (flow.getState().phase !== 'top') return;
+  if (shell.dataset.screen === button.dataset.section) return;
   showScreen(button.dataset.section);
+  portal.play();
   if (!shell.inert) headings[button.dataset.section].focus({preventScroll:true});
 }));
 let previousPhase;
