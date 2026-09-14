@@ -34,6 +34,10 @@ const career = setupCareer(screens.career);
 const parallax = setupTopParallax((x,y) => {
   avatar.setView(x,y);
   byId('top-world-image').style.transform = `translate3d(${-x*3}%, ${y*3}%, 0) scale(1.12)`;
+  // Glass catches the same view movement; no separate animation loop.
+  screens.top.style.setProperty('--reflection-angle', `${118 + x * 8}deg`);
+  screens.top.style.setProperty('--reflection-x', `${50 + x * 28}%`);
+  screens.top.style.setProperty('--reflection-y', `${35 - y * 20}%`);
 });
 function showScreen(name) {
   shell.dataset.screen = name;
