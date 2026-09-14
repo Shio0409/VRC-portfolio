@@ -2,6 +2,7 @@ import { createEntryFlow } from './entry-flow.js';
 import { loadInitialAssets } from './assets.js';
 import { setupOrientationGate } from './viewport.js';
 import { setupTop } from './top.js';
+import { setupAvatarSlot } from './avatar-slot.js';
 
 const byId = (id) => document.getElementById(id);
 const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen') };
@@ -26,6 +27,7 @@ setupOrientationGate({
 });
 
 const top = setupTop(screens.top);
+const avatar = setupAvatarSlot(screens.top, top.openSkills);
 let previousPhase;
 let previousLoadingMessage;
 let previousUrl;
@@ -36,6 +38,7 @@ flow.subscribe((state) => {
     shell.dataset.screen = visibleScreen;
     if (state.phase === 'entry') top.reset();
     for (const [name, screen] of Object.entries(screens)) screen.hidden = name !== visibleScreen;
+    avatar.setVisible(visibleScreen === 'top');
     byId('sound-control').hidden = state.phase === 'entry';
     const failed = state.phase === 'error';
     screens.loading.dataset.error = String(failed);

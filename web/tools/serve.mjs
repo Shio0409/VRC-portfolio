@@ -3,6 +3,7 @@ import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { avatarPublicFiles } from './avatar-public-files.mjs';
 
 const project = fileURLToPath(new URL('../', import.meta.url));
 const built = process.argv.includes('--dist');
@@ -25,6 +26,7 @@ const publicFiles = new Map([
 ]);
 
 // Explicit local inspection routes; never included in production or normal preview.
+for (const file of avatarPublicFiles) publicFiles.set(`/${file}`, file);
 if (avatar) {
   for (const name of ['viewer.html', 'viewer.css', 'viewer.js']) {
     publicFiles.set(`/avatar/${name}`, `tools/avatar/${name}`);

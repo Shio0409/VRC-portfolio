@@ -1,15 +1,15 @@
 # Sio's Portfolio — Web
 
-現在の実装は **Sound選択 → 00 Loading → 01 TOP / Skill Menu** です。TOPの3D表示は未接続です。サイト全体の基準はプロジェクトルートの「portfolio sitedesign.md」を参照してください。
+現在の実装は **Sound選択 → 00 Loading → 01 TOP / 3D Avatar / Skill Menu** です。サイト全体の基準はプロジェクトルートの「portfolio sitedesign.md」を参照してください。
 
 ## 技術構成
 
-- HTML / CSS / JavaScript（ES Modules）。ランタイム・開発用とも外部依存パッケージなし。
+- HTML / CSS / JavaScript（ES Modules）。TOPはThree.js 0.180.0を使用。必要なモジュールを`assets/vendor/three`に同梱し、MITライセンスを保持しています。外部CDNには接続しません。
 - Node.js 22以上で開発サーバー・静的ファイル出力・テストを実行。
 - GitHub Pages用に静的ファイルだけを出力。リポジトリは[Shio0409/VRC-portfolio](https://github.com/Shio0409/VRC-portfolio)。Pages公開設定とサブドメイン名は未設定。
 - ファイルURLは相対指定。ドメイン直下とGitHub Project Pagesのサブパスに対応する構成。
 - フォントは端末のシステムフォントを使用。フォント最終選定は保留。
-- Unity側のファイルは使用・変更しない。Three.jsはアバター実装の段階で導入を検討する。
+- WebランタイムはUnityプロジェクトにアクセスせず、Web用に書き出したGLBのみ使用します。
 
 ## 実行
 
@@ -75,7 +75,7 @@ node tools/serve.mjs --dist
 - `portfolio:sound-change`イベントで`detail.enabled`を通知し、後から音源を接続可能。
 - LocalStorageへの保存は実装していない。保存・復元方針は未確定のまま。
 - Global Soundと動画プレイヤーの優先関係は、動画実装時に確認。
-- TOPの3D表示は未接続であり、未ロードアバターの最終Fallbackは決めていない。
+- TOPでアバターを別途読み込みます。読み込み中は状態文、失敗時は再試行を表示します。Loading全体の待機対象への追加や低性能端末向けの最終Fallbackは保留です。
 - 共通Navigation、アバター、CAREER、WORKS、CONTACTは今回の範囲外。
 - GitHub Pages公開・DNS変更は未実施。
 
@@ -110,12 +110,26 @@ Loading・SKIPの移動先にTOPのレイアウトとSkill Menuを実装しま�
 
 初期USER・メニュー開。カテゴリは下部6タブのみで切り替えます。左右キー・Home/End対応、Escapeと×で閉じ、SKILL MENUボタンで再表示します。再表示は選択カテゴリを維持し、ENTRYへ戻った場合はUSERへリセットします。将来のアバタークリックは`setupTop()`の`openSkills()`へ接続できます。
 
-今回の範囲はレイアウト・スキル内容・操作までです。中央のGLB描画、実アバター画像のプロフィールアイコン、会話、Portal移動は未接続です。プロフィールは汎用の人物アイコンを使用しています。CAREER/WORKS/CONTACTのNavigationは「準備中」の無効ボタンとして表示しています。Navigationの見た目はコンセプトに基づく暫定案です。
+レイアウト段階ではスキル内容・操作までを実装し、その後GLB描画を接続しました（下記参照）。実アバター画像のプロフィールアイコン、会話、Portal移動は未接続です。プロフィールは汎用の人物アイコンを使用しています。CAREER/WORKS/CONTACTのNavigationは「準備中」の無効ボタンとして表示しています。Navigationの見た目はコンセプトに基づく暫定案です。
 
 PCとスマートフォン横画面で同じ3列構成を使用します。高さの小さい画面では左の紹介・NavigationとSkill本文をそれぞれスクロールでき、6タブは固定表示します。縦向きの制御は共通`viewport.js`と`viewport.css`を継続使用します。
 
 検証：LoadingからのTOP表示、DEV切り替え、EndキーでMANAGEへ移動、閉じる・再表示時の選択維持、844×390での配置をブラウザで確認。既存のLoading/Orientation 14テスト成功。公開ビルドは14ファイルで、Three.jsとGLBはまだ含みません。
 
+## TOPの3D接続（2026-09-14）
+
+`src/avatar-slot.js`がTOPの入退場・中断・再試行を管理し、`src/avatar-scene.js`を動的importします。Three.jsとGLBはTOPに入るまで読み込みません。初回のLoadingは引き続き写真と最低2秒を待ち、TOPのアバター準備は別の状態文で表示します。Skill Menuは読込失敗時も操作可能です。
+
+使用モデルは`assets/models/kipfel-preview.glb`（14,751,980 bytes、テクスチャ最大1024）。固定表情を含むUnity書き出し`kipfel-preview-20260913-052710.glb`を既存ツールで最適化しました。モデルはTポーズ・ギターあり・アニメーションなしの暫定表示で、最終ポーズの決定ではありません。Unity原本と全アニメーションのカタログGLBは公開ファイルに含めません。
+
+全Bodyプリミティブの`eye_pupil_OFF`を1に固定。GPUへのアップロード前に未使用Morph Targetを除外し、既存ウェイトと固定表情を保持します。黒ずみ対策として頂点カラーの乗算を無効化し、確認ビューアーと同じ照明を使用。ポーズ・Blink等を採用する段階で必要なMorph TargetとAnimationの保持対象を拡張します。
+
+アバターはボタンとしてキーボードでも選択でき、クリック/Enter/SpaceでSkill Menuを開きます。描画は初期表示・リサイズ・タブ復帰時のみで常時ループしません。DPRはPC最大1.5、coarseポインター最大1。ENTRYへ戻ると通信を中止し、geometry/material/texture/skeleton/rendererを解放します。
+
+公開対象の追加ファイルは`tools/avatar-public-files.mjs`で配信とビルドに共通化しています。22ファイルを出力し、相対import mapとモデルURLでProject Pagesのサブパスにも対応します。今回のモデルとThree.jsの必要ファイルはWebで使用する素材としてGit管理します。
+
+検証：PC/844×390で3D表示、アバターからメニューを再表示、ブラウザエラーなし。中断後の古い読込結果を破棄すること、リソース解放、失敗からの再試行を含む17テスト成功。実機モバイルでの性能確認は未実施です。
+
 ### アバター確認用ツール
 
-`tools/avatar/README.md`にGLBの準備とThree.js確認ビューアーの起動方法をまとめています。`node tools/serve.mjs --avatar --port 4174`で確認画面を有効にできます。通常のサイト・公開ビルドには含まれません。
+`tools/avatar/README.md`にGLBの準備とThree.js確認ビューアーの起動方法をまとめています。`node tools/serve.mjs --avatar --port 4174`で確認画面を有効にできます。確認画面・カタログ用モデルは通常のサイト・公開ビルドには含まれません。

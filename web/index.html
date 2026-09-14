@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./src/styles.css" />
     <link rel="stylesheet" href="./src/viewport.css" />
     <link rel="stylesheet" href="./src/top.css" />
+    <script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/examples/jsm/"}}</script>
     <script type="module" src="./src/app.js"></script>
   </head>
   <body>
@@ -125,10 +126,13 @@
             </nav>
             <button class="button return-button" id="return-button" type="button">ENTRYへ戻る ↗</button>
           </div>
-          <div class="avatar-stage" aria-label="アバターの表示領域（3Dは次の工程で接続）">
+          <div class="avatar-stage" aria-label="Sioの3Dアバター">
             <div class="avatar-orbit" aria-hidden="true"></div>
             <div class="avatar-nameplate"><span class="status-dot" aria-hidden="true"></span>sio0409</div>
-            <div id="top-avatar-mount" class="avatar-mount"></div>
+            <div id="top-avatar-mount" class="avatar-mount">
+              <button type="button" id="avatar-button" class="avatar-button" disabled aria-label="アバターを選択してスキルメニューを開く" aria-controls="skill-menu"><canvas id="top-avatar-canvas" aria-hidden="true"></canvas></button>
+              <div class="avatar-feedback"><p id="avatar-message" role="status">アバターを読み込んでいます…</p><button type="button" class="button" id="avatar-retry" hidden>再試行</button></div>
+            </div>
             <div class="avatar-platform" aria-hidden="true"></div>
           </div>
           <aside id="skill-menu" class="skill-menu" aria-label="スキルメニュー">
