@@ -3,10 +3,11 @@ import { loadInitialAssets } from './assets.js';
 import { setupOrientationGate } from './viewport.js';
 import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
+import { setupCareer } from './career.js';
 
 const byId = (id) => document.getElementById(id);
-const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen') };
-const headings = { entry: byId('entry-title'), loading: byId('loading-title'), top: byId('top-title') };
+const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen') };
+const headings = { entry: byId('entry-title'), loading: byId('loading-title'), top: byId('top-title'), career: byId('career-title') };
 const image = byId('world-image');
 const soundButton = byId('sound-toggle');
 const progress = byId('travel-progress');
@@ -23,11 +24,24 @@ setupOrientationGate({
   media: matchMedia('(pointer: coarse) and (max-width: 767px) and (orientation: portrait)'),
   shell,
   gate: byId('orientation-gate'),
-  getResumeTarget: () => flow.getState().phase === 'error' ? byId('retry-button') : headings[flow.getState().phase],
+  getResumeTarget: () => flow.getState().phase === 'error' ? byId('retry-button') : headings[shell.dataset.screen] ?? headings.entry,
 });
 
 const top = setupTop(screens.top);
 const avatar = setupAvatarSlot(screens.top, top.openSkills);
+const career = setupCareer(screens.career);
+function showScreen(name) {
+  shell.dataset.screen = name;
+  for (const [key, screen] of Object.entries(screens)) screen.hidden = key !== name;
+  avatar.setVisible(name === 'top');
+  top.setVisible(name === 'top');
+  career.setVisible(name === 'career');
+}
+document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => {
+  if (flow.getState().phase !== 'top') return;
+  showScreen(button.dataset.section);
+  if (!shell.inert) headings[button.dataset.section].focus({preventScroll:true});
+}));
 let previousPhase;
 let previousLoadingMessage;
 let previousUrl;
@@ -35,11 +49,8 @@ let previousSound = false;
 flow.subscribe((state) => {
   const visibleScreen = state.phase === 'error' ? 'loading' : state.phase;
   if (state.phase !== previousPhase) {
-    shell.dataset.screen = visibleScreen;
-    if (state.phase === 'entry') top.reset();
-    for (const [name, screen] of Object.entries(screens)) screen.hidden = name !== visibleScreen;
-    avatar.setVisible(visibleScreen === 'top');
-    top.setVisible(visibleScreen === 'top');
+    if (state.phase === 'entry') { top.reset(); career.reset(); }
+    showScreen(visibleScreen);
     byId('sound-control').hidden = state.phase === 'entry';
     const failed = state.phase === 'error';
     screens.loading.dataset.error = String(failed);

@@ -27,6 +27,11 @@ const publicFiles = new Map([
   ['/assets/cursor-hover.svg', 'assets/cursor-hover.svg'],
 ]);
 
+publicFiles.set('/src/career.css', 'src/career.css');
+publicFiles.set('/src/career.js', 'src/career.js');
+publicFiles.set('/src/career-data.js', 'src/career-data.js');
+publicFiles.set('/src/career-clock.js', 'src/career-clock.js');
+
 // Explicit local inspection routes; never included in production or normal preview.
 for (const file of avatarPublicFiles) publicFiles.set(`/${file}`, file);
 if (avatar) {

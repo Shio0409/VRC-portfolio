@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./src/styles.css" />
     <link rel="stylesheet" href="./src/viewport.css" />
     <link rel="stylesheet" href="./src/top.css" />
+    <link rel="stylesheet" href="./src/career.css" />
     <script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/examples/jsm/"}}</script>
     <script type="module" src="./src/app.js"></script>
   </head>
@@ -120,7 +121,7 @@
             <nav class="world-nav" aria-label="サイト内ナビゲーション">
               <ol>
                 <li><a href="#top-title" aria-current="page"><span>01</span> TOP</a></li>
-                <li><button type="button" disabled><span>02</span> CAREER <small>準備中</small></button></li>
+                <li><button type="button" data-section="career"><span>02</span> CAREER</button></li>
                 <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
                 <li><button type="button" disabled><span>04</span> CONTACT <small>準備中</small></button></li>
               </ol>
@@ -152,6 +153,45 @@
             <div id="skill-tabs" class="skill-tabs" role="tablist" aria-label="スキルカテゴリ"></div>
           </aside>
           <button type="button" id="skill-open" class="button skill-open" aria-controls="skill-menu" aria-expanded="true" hidden>SKILL MENU ＋</button>
+        </section>
+        <section class="screen career-screen" id="career-screen" aria-labelledby="career-title" hidden>
+          <div class="career-intro">
+            <h1 id="career-title" tabindex="-1">02 CAREER</h1>
+            <p class="top-byline">Sio's Portfolio<br />by Sio0409</p>
+            <p class="career-tagline">自分のキャリアを、<br />再生する。</p>
+            <nav class="world-nav" aria-label="サイト内ナビゲーション">
+              <ol>
+                <li><button type="button" data-section="top"><span>01</span> TOP</button></li>
+                <li><a href="#career-title" aria-current="page"><span>02</span> CAREER</a></li>
+                <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
+                <li><button type="button" disabled><span>04</span> CONTACT <small>準備中</small></button></li>
+              </ol>
+            </nav>
+          </div>
+          <div class="career-player" id="career-player">
+            <div class="career-player-heading"><span>CAREER PRESENTATION</span><span id="career-chapter-number"></span></div>
+            <article class="career-slide" id="career-slide" tabindex="0" aria-labelledby="career-heading">
+              <div class="career-year" id="career-year"></div>
+              <div class="career-story">
+                <p class="career-label" id="career-label"></p>
+                <h2 id="career-heading"></h2>
+                <div id="career-content"></div>
+                <p class="career-keywords" id="career-keywords"></p>
+              </div>
+            </article>
+            <div class="career-timeline">
+              <div class="career-years" id="career-years" aria-label="年から経歴を選ぶ"></div>
+              <input id="career-seek" type="range" min="0" max="108" step="0.1" value="0" aria-label="経歴の再生位置" />
+            </div>
+            <div class="career-controls">
+              <button type="button" id="career-prev" aria-label="前の経歴">|◀</button>
+              <button type="button" id="career-play" aria-label="再生">▶</button>
+              <button type="button" id="career-next" aria-label="次の経歴">▶|</button>
+              <output id="career-time" aria-label="再生時間">00:00 / 01:48</output>
+              <div class="career-volume" title="音素材は準備中です"><button type="button" disabled aria-label="ミュート・音素材準備中">♪ ×</button><input type="range" min="0" max="100" value="0" disabled aria-label="音量・音素材準備中" /></div>
+              <button type="button" id="career-expand" aria-label="プレイヤーを拡大表示" aria-pressed="false">⛶</button>
+            </div>
+          </div>
         </section>
       </main>
 
