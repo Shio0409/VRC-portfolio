@@ -67,15 +67,27 @@ export async function createAvatarScene({ canvas, signal }) {
     const key = new THREE.DirectionalLight(0xffffff, 2.5); key.position.set(2,3,4); scene.add(key);
     const fill = new THREE.DirectionalLight(0xb9ddff,1); fill.position.set(-2,1,-2); scene.add(fill);
     model.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(model), center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+    const box = new THREE.Box3().setFromObject(model), size = box.getSize(new THREE.Vector3());
+    const eyes = [];
+    model.traverse(node => {
+      const index = gltf.parser.associations.get(node)?.nodes;
+      if (['Eye.L','Eye.R'].includes(gltf.parser.json.nodes[index]?.name)) eyes.push(node.getWorldPosition(new THREE.Vector3()));
+    });
+    if (eyes.length !== 2) throw new Error('Required avatar eye bones are missing');
+    const face = eyes[0].add(eyes[1]).multiplyScalar(.5);
     let distance = 1, viewX = 0, viewY = 0;
     const orbit = () => {
       // A 30-degree cone in any direction, rather than rotating the avatar itself.
       const magnitude = Math.min(1, Math.hypot(viewX, viewY));
       const angle = magnitude * Math.PI / 6;
       const factor = magnitude ? Math.sin(angle) / Math.hypot(viewX, viewY) : 0;
-      camera.position.set(center.x + distance * viewX * factor, center.y + distance * viewY * factor, center.z + distance * Math.cos(angle));
-      camera.lookAt(center); draw();
+      // Tilt the neutral view 30 degrees above the eye midpoint, preserving the pointer cone.
+      const localY = viewY * factor, localZ = Math.cos(angle);
+      const tilt = Math.PI / 6;
+      camera.position.set(face.x + distance * viewX * factor,
+        face.y + distance * (localY * Math.cos(tilt) + localZ * Math.sin(tilt)),
+        face.z + distance * (localZ * Math.cos(tilt) - localY * Math.sin(tilt)));
+      camera.lookAt(face); draw();
     };
     const resize = () => {
       if (disposed) return;
