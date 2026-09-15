@@ -69,3 +69,8 @@ a.contact-link:hover,a.contact-link:focus-visible { border-color:#80edff; backgr
 .contact-avatar-circle { border-color:#a7efff; box-shadow:0 0 0 4px #75dbf30a,0 0 24px #5addfa22,inset 0 1px 5px #dcfbff52; }
 .contact-card-dot { order:1; margin-left:auto; box-shadow:0 0 10px #8dd7e870; }
 @media (max-height:500px) { .contact-heading::after { display:none; } }
+
+@media (min-height:501px) {
+  .site-shell[data-screen="contact"] { padding-top:84px; }
+  .contact-screen { height:calc(100svh - 132px); }
+}
