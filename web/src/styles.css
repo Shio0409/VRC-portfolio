@@ -10,6 +10,9 @@
   --muted: #a8becb;
   --line: rgb(103 225 239 / 28%);
   --panel: rgb(6 27 39 / 64%);
+  --glass-surface: linear-gradient(125deg, rgb(103 175 203 / 7%), rgb(3 18 29 / 17%));
+  --glass-edge: rgb(161 227 250 / 60%);
+  --glass-shadow: inset 0 1px 0 #edfcff8c, inset 1px 0 0 #b7efff30, inset 0 -1px 0 #89ddf75c, inset 0 0 18px #68d4ef0c, 0 18px 48px #000b183d;
   --cursor-normal: url("../assets/cursor-normal.svg") 12 12, auto;
   --cursor-hover: url("../assets/cursor-hover.svg") 6 5, pointer;
 }

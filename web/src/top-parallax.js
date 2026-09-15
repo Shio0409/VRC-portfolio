@@ -5,6 +5,22 @@ export function pointerView(x, y, width, height) {
   return { x:nx / length, y:ny / length };
 }
 
+/** A distant plane follows the orbit: camera-right exposes more of the left side.
+ * CSS Y points down; the camera's Y points up. Tilt brings the camera-side edge
+ * forward. Overscan covers the viewport even at the far edge of the view cone.
+ */
+export function backgroundView(x, y, width, height) {
+  const length = Math.max(1, Math.hypot(x, y));
+  x /= length; y /= length;
+  return {translateX:x * 3, translateY:-y * 3, rotateX:-y * 6, rotateY:-x * 6,
+    scale:1.2, perspective:Math.max(1, width, height) * 1.6};
+}
+
+export function backgroundTransform(x, y, width, height) {
+  const v = backgroundView(x, y, width, height);
+  return `translate3d(${v.translateX}%, ${v.translateY}%, 0) perspective(${v.perspective}px) rotateX(${v.rotateX}deg) rotateY(${v.rotateY}deg) scale(${v.scale})`;
+}
+
 /** One shared, demand-driven motion loop for the camera and background. */
 export function setupTopParallax(onView) {
   const fine = matchMedia('(hover: hover) and (pointer: fine)');

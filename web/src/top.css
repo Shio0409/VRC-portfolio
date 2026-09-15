@@ -1,11 +1,11 @@
 /* TOP keeps the same left / avatar / skill composition on every landscape viewport. */
 .top-world { overflow:hidden; position:fixed; inset:0; z-index:-1; pointer-events:none; background:#061321; }
-.top-world img { width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.12); opacity:0; transition:opacity .65s ease; }
+.top-world img { width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.2); transform-origin:center; opacity:0; transition:opacity .65s ease; }
 .top-world[data-ready="true"] img { opacity:1; }
-.top-world::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,rgb(2 12 23 / 58%),transparent 48%,rgb(2 12 23 / 12%)),linear-gradient(0deg,rgb(2 12 23 / 38%),transparent 25%); }
+.top-world::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,rgb(2 12 23 / 42%),transparent 48%,rgb(2 12 23 / 12%)),linear-gradient(0deg,rgb(2 12 23 / 38%),transparent 25%); }
 body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
-.dialogue { position:relative; z-index:1; display:flex; flex-direction:column; width:100%; max-width:340px; flex-shrink:0; gap:10px; margin:16px 0 8px; padding:16px 18px; border:1px solid rgb(164 226 249 / 70%); border-radius:17px; background:linear-gradient(135deg,rgb(133 177 203 / 14%),rgb(8 25 43 / 24%)); backdrop-filter:blur(8px) saturate(1.25); -webkit-backdrop-filter:blur(8px) saturate(1.25); box-shadow:inset 0 1px 9px rgb(174 236 255 / 16%),0 8px 30px rgb(0 9 20 / 25%); text-align:left; color:#e2f4fb; }
-.dialogue::after { content:''; position:absolute; bottom:-10px; left:26px; width:18px; height:18px; transform:skewY(-35deg); border-left:1px solid #8dbbd0; border-bottom:1px solid #8dbbd0; background:#29475b; clip-path:polygon(0 0,100% 0,0 100%); }
+.dialogue { position:relative; z-index:1; display:flex; flex-direction:column; width:100%; max-width:340px; flex-shrink:0; gap:10px; margin:16px 0 8px; padding:16px 18px; border:1px solid rgb(164 226 249 / 70%); border-radius:17px; background:var(--glass-surface); backdrop-filter:blur(5px) saturate(1.4); -webkit-backdrop-filter:blur(5px) saturate(1.4); box-shadow:inset 0 1px 9px rgb(174 236 255 / 16%),0 8px 30px rgb(0 9 20 / 25%); text-align:left; color:#e2f4fb; }
+.dialogue::after { content:''; position:absolute; bottom:-10px; left:26px; width:18px; height:18px; transform:skewY(-35deg); border-left:1px solid #8dbbd0; border-bottom:1px solid #8dbbd0; background:#537f9340; clip-path:polygon(0 0,100% 0,0 100%); }
 .dialogue-speaker { display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.12em; color:#70f6fc; }
 .dialogue-body, .dialogue-sizing { display:grid; }
 .dialogue-body > *, .dialogue-sizing > * { grid-area:1 / 1; }
@@ -44,14 +44,14 @@ body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
 .avatar-feedback { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; padding:15px; pointer-events:none; }
 .avatar-feedback p { color:var(--muted); font-size:12px; line-height:1.8; }
 .avatar-feedback button { pointer-events:auto; font-size:12px; padding:8px 12px; }
-.skill-menu { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr) auto; min-width:0; min-height:0; padding:clamp(10px,1.6vw,23px); border:1px solid rgb(125 220 241 / 65%); border-radius:18px; background:linear-gradient(125deg,rgb(67 126 151 / 12%),rgb(3 18 29 / 28%)); box-shadow:inset 0 1px 12px rgb(160 231 249 / 18%),inset 0 -1px 9px rgb(113 213 241 / 12%),0 22px 65px rgb(0 5 12 / 30%); backdrop-filter:blur(9px) saturate(1.25); -webkit-backdrop-filter:blur(9px) saturate(1.25); }
+.skill-menu { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr) auto; min-width:0; min-height:0; padding:clamp(10px,1.6vw,23px); border:1px solid rgb(125 220 241 / 65%); border-radius:18px; background:var(--glass-surface); box-shadow:var(--glass-shadow); backdrop-filter:blur(5px) saturate(1.4); -webkit-backdrop-filter:blur(5px) saturate(1.4); }
 .skill-header { display:flex; align-items:center; gap:12px; min-width:0; padding:0 0 14px; border-bottom:1px solid rgb(104 196 213 / 15%); }
 .profile-symbol { display:grid; place-items:center; width:46px; height:46px; flex-shrink:0; border:1px solid #46b4d2; border-radius:50%; background:linear-gradient(135deg,#185574,#09283d); color:#a5f0f5; }
 .profile-symbol svg { width:24px; height:24px; }
 .skill-identity { flex:1; min-width:0; }.skill-identity strong { font-size:clamp(14px,1.5vw,20px); font-weight:450; letter-spacing:.12em; }.skill-identity p { display:flex; align-items:center; gap:7px; margin-top:5px; font-size:clamp(10px,1vw,12px); color:#c3dae2; }
 .skill-close { display:grid; place-items:center; align-self:flex-start; background:none; border:0; width:44px; height:44px; flex-shrink:0; color:var(--cyan); }.skill-close svg { width:24px; height:24px; }
 .skill-panels { min-height:0; overflow:hidden; margin-top:clamp(10px,2.5svh,28px); }
-.skill-panel { height:100%; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#397085 transparent; padding:clamp(12px,2vw,24px); border:1px solid rgb(94 195 218 / 30%); border-radius:11px; background:linear-gradient(125deg,rgb(79 149 169 / 8%),rgb(3 17 28 / 19%)); box-shadow:inset 0 1px 1px #c1f5ff35, inset 0 0 28px #65d5ec08; }
+.skill-panel { height:100%; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#397085 transparent; padding:clamp(12px,2vw,24px); border:1px solid rgb(94 195 218 / 30%); border-radius:11px; background:linear-gradient(125deg,rgb(79 149 169 / 4%),rgb(3 17 28 / 10%)); box-shadow:inset 0 1px 1px #c1f5ff35, inset 0 0 28px #65d5ec08; }
 .skill-panel:focus-visible { outline:2px solid var(--cyan); outline-offset:-3px; }
 .skill-section-line { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:clamp(14px,1.6vw,21px); letter-spacing:.1em; }.skill-section-line>span:first-child { border-left:4px solid var(--cyan); padding-left:12px; }.skill-section-line>span:last-child { font-size:12px; color:#b5d7e1; }.skill-section-line i { font-style:normal; color:#638e9f; }
 .skill-panel h2 { margin:clamp(18px,3svh,32px) 0 14px; font-size:clamp(17px,1.8vw,25px); font-weight:450; line-height:1.7; }.skill-description,.skill-group p { font-size:clamp(12px,1.05vw,14px); color:#b8d0db; line-height:1.95; }.skill-group { margin-top:24px; }.skill-group h3 { font-size:11px; font-weight:400; color:#73cddc; letter-spacing:.12em; margin:0 0 12px; }.skill-group ul { list-style:none; padding:0; margin:0; display:flex; flex-wrap:wrap; gap:8px 14px; }.skill-group li { font-size:clamp(12px,1.05vw,14px); line-height:1.8; color:#d9e9ee; }.skill-group li::before { content:'·'; color:#64b6c9; margin-right:7px; }
@@ -68,26 +68,29 @@ body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
 @media (prefers-reduced-motion:reduce) { .top-world img { transition:none; } }
 @supports not (backdrop-filter:blur(1px)) { .skill-menu { background:rgb(5 25 39 / 94%); }.dialogue { background:rgb(20 43 62 / 94%); } }
 
-/* Edge reflections sit above glass without intercepting controls. */
-.skill-menu::before, .dialogue::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; border-top:1px solid #d4f6ff80; border-left:1px solid #b2eafa40; box-shadow:inset 0 0 3px #b1edff66, inset 0 -8px 16px #6ac7e318; }
-.skill-menu { border-color:#9de0f68c; }
-.skill-header { background:linear-gradient(110deg,#2b6a8026,#031b2a38); }
+/* Thin rims, localized glints and restrained reflections leave the scenery visible.
+   Pseudo-elements do not capture input or create another backdrop blur layer. */
+:is(.skill-menu, .dialogue, .contact-profile, .career-player)::before {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:
+    radial-gradient(ellipse at var(--reflection-x,75%) 0%,#d5f9ff38,transparent 32%),
+    linear-gradient(var(--reflection-angle,118deg),transparent 3%,#e4f8ff16 4%,transparent 22%,transparent 59%,#bcefff0a 64%,transparent 80%);
+  border-top:1px solid #ecfcff91; border-left:1px solid #c6f4ff52;
+  box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #99e6ff50;
+}
+:is(.skill-menu, .contact-profile, .career-player)::after {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:radial-gradient(ellipse 100px 2px at var(--reflection-x,75%) 0%,#d9fcff,transparent),radial-gradient(ellipse 2px 75px at 0% var(--reflection-y,70%),#b5f5ff90,transparent),radial-gradient(ellipse 110px 2px at 25% 100%,#70dfff8c,transparent);
+}
+.skill-menu { border-color:var(--glass-edge); }
+.skill-menu, .dialogue { text-shadow:0 1px 3px #00111ee6; }
+.skill-header { background:linear-gradient(110deg,#8fd5ec08,#031b2a0d); border-color:#9cdcf52b; }
 .skill-tabs { border-top-color:#80d7eb40; }
 .skill-tabs [aria-selected=true] { text-shadow:0 0 14px #54edf166; }
+.skill-tabs [aria-selected=true]::before { content:''; position:absolute; top:0; left:8px; right:8px; height:1px; background:#8af6ff; box-shadow:0 0 10px #6feaff70; }
+.skill-section-line>span:first-child { border-left-width:3px; }
 .top-tagline { text-shadow:0 0 20px #63e6ef25; }
 .top-caption::before { content:''; display:block; width:28px; height:1px; margin-bottom:15px; background:#b8dbe3; }
 .world-nav li:has([aria-current])::before { background:#65edf2; box-shadow:0 0 15px #5be8ef8c; }
 .world-nav button:not(:disabled):hover, .world-nav a:hover { color:#c4fbff; background:linear-gradient(90deg,#68dbe414,transparent); }
-
-/* Broad reflected light and a crisp highlight distinguish clear glass from frosted plastic. */
-.skill-menu::before, .dialogue::before {
-  background:
-    radial-gradient(ellipse at var(--reflection-x,50%) var(--reflection-y,35%),#e0f7ff12,transparent 58%),
-    linear-gradient(var(--reflection-angle,118deg),transparent 3%,#e4f8ff24 4%,#e4f8ff06 18%,transparent 23%,transparent 52%,#c2f2ff14 58%,transparent 78%);
-  border-top-color:#f0fdffbf;
-  border-left-color:#c6f4ff7a;
-  box-shadow:inset 0 1px 0 #ffffff80,inset 1px 0 0 #ddf9ff26,inset 0 -1px 0 #99e6ff80,0 0 1px #c4f4ff;
-}
-.skill-menu, .dialogue { text-shadow:0 1px 3px #00111ed9; }
-.skill-header { background:linear-gradient(110deg,#8fd5ec0c,#031b2a16); }
-.avatar-nameplate { background:#15334540; backdrop-filter:blur(6px); box-shadow:inset 0 1px 0 #defbff60; }
+.avatar-nameplate { background:#15334526; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); box-shadow:inset 0 1px 0 #defbff60; }

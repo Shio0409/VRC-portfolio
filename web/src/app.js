@@ -5,7 +5,7 @@ import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
 import { setupContact } from './contact.js';
-import { setupTopParallax } from './top-parallax.js';
+import { setupTopParallax, backgroundTransform } from './top-parallax.js';
 import { setupPortal } from './portal.js';
 import { setupSectionNavigation } from './section-navigation.js';
 
@@ -38,7 +38,7 @@ const contact = setupContact(screens.contact);
 const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
   avatar.setView(x,y);
-  byId('top-world-image').style.transform = `translate3d(${-x*3}%, ${y*3}%, 0) scale(1.12)`;
+  byId('top-world-image').style.transform = backgroundTransform(x,y,innerWidth,innerHeight);
   // Glass catches the same view movement; no separate animation loop.
   screens.top.style.setProperty('--reflection-angle', `${118 + x * 8}deg`);
   screens.top.style.setProperty('--reflection-x', `${50 + x * 28}%`);

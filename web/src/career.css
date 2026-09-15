@@ -7,7 +7,7 @@
 .career-intro .world-nav { padding-bottom:16px; }
 .career-intro .world-nav li:first-child::before { border-color:#719eaf; box-shadow:none; }
 .career-intro .world-nav li:nth-child(2)::before { border-color:var(--cyan); box-shadow:0 0 12px var(--cyan); }
-.career-player { display:grid; grid-template-rows:auto minmax(0,1fr) auto auto; min-width:0; min-height:0; padding:clamp(12px,2vw,26px); gap:12px; border:1px solid #78c9dd70; border-radius:18px; background:linear-gradient(118deg,#d5f5ff18,transparent 22%,#07182745 68%,#b7eafa12); backdrop-filter:blur(9px) saturate(1.25); -webkit-backdrop-filter:blur(9px) saturate(1.25); box-shadow:inset 0 1px 2px #c3f0ff66,inset 0 -1px 12px #68d4ec20,0 22px 65px #00050c40; }
+.career-player { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr) auto auto; min-width:0; min-height:0; padding:clamp(12px,2vw,26px); gap:12px; border:1px solid #78c9dd70; border-radius:18px; background:var(--glass-surface); backdrop-filter:blur(6px) saturate(1.4); -webkit-backdrop-filter:blur(6px) saturate(1.4); box-shadow:var(--glass-shadow); }
 .career-player-heading { display:flex; justify-content:space-between; color:#91bbc9; font-size:10px; letter-spacing:.17em; }
 .career-slide { position:relative; display:grid; grid-template-columns:minmax(80px,.7fr) minmax(0,2fr); align-content:start; gap:clamp(15px,3vw,42px); min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#468da5 transparent; padding:clamp(18px,3vw,42px); border:1px solid #7bdcf32b; border-radius:12px; background:radial-gradient(ellipse at 0 20%,#1b5a7160,transparent 75%),linear-gradient(130deg,#0e2e40,#081c2e); }
 .career-year { font-size:clamp(32px,5vw,80px); font-weight:250; color:#b0e9f3; letter-spacing:.08em; line-height:1.2; }
@@ -25,7 +25,7 @@
 #career-seek::-webkit-slider-thumb { appearance:none; width:15px; height:15px; border-radius:50%; background:#76f1f4; box-shadow:0 0 12px #50d7dd60; }
 #career-seek::-moz-range-thumb { width:15px; height:15px; border:0; border-radius:50%; background:#76f1f4; }
 .career-controls { overflow-x:auto; display:flex; align-items:center; gap:6px; min-width:0; }
-.career-controls button { flex-shrink:0; min-width:44px; min-height:44px; border:1px solid #6198ac60; border-radius:5px; background:#112d3c60; color:#81e7ef; font-size:17px; }
+.career-controls button { flex-shrink:0; min-width:44px; min-height:44px; border:1px solid #6198ac60; border-radius:5px; background:linear-gradient(135deg,#abcfe514,#112d3c26); box-shadow:inset 0 1px 0 #cef3ff38; color:#81e7ef; font-size:17px; }
 .career-controls button:disabled { opacity:.4; }
 #career-time { margin-right:auto; margin-left:6px; color:#9cdee9; font-size:clamp(10px,1.1vw,15px); white-space:nowrap; font-variant-numeric:tabular-nums; }
 .career-volume { display:flex; align-items:center; gap:6px; }
@@ -48,3 +48,8 @@
 
 .career-controls button { display:grid; place-items:center; }
 .career-controls button svg { width:21px; height:21px; }
+
+.career-controls { padding-top:8px; border-top:1px solid #a3e3f529; }
+.career-player-heading { color:#b3d6e3; }
+.career-year { text-shadow:0 0 24px #79dcf51c; }
+.career-slide { box-shadow:inset 0 1px 0 #caf4ff2e; }
