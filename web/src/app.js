@@ -1,6 +1,6 @@
 import { createEntryFlow } from './entry-flow.js';
 import { loadInitialAssets } from './assets.js';
-import { setupOrientationGate } from './viewport.js';
+import { setupOrientationGate, setupScrollHints } from './viewport.js';
 import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
@@ -35,6 +35,7 @@ const top = setupTop(screens.top);
 const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
 const contact = setupContact(screens.contact);
+setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .top-intro, .career-intro'));
 const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
   avatar.setView(x,y);

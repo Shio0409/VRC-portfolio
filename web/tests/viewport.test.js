@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setupOrientationGate } from '../src/viewport.js';
+import { setupOrientationGate, setupScrollHints } from '../src/viewport.js';
 
 function setup(portrait) {
   const listeners = new Set();
@@ -59,4 +59,21 @@ test('disposing the gate removes the media listener', () => {
   s.rotate(true);
   assert.equal(s.shell.inert, false);
   assert.equal(s.gate.hidden, true);
+});
+
+test('scroll hints follow overflow, reading position and resizing without idle polling', t => {
+  const saved={document:globalThis.document,ResizeObserver:globalThis.ResizeObserver,MutationObserver:globalThis.MutationObserver};
+  let resized,mutated,hint,disconnected=0;
+  globalThis.document={createElement:()=>hint={style:{},setAttribute(){},remove(){this.removed=true;}}};
+  globalThis.ResizeObserver=class {constructor(fn){resized=fn;} observe(){} disconnect(){disconnected++;}};
+  globalThis.MutationObserver=class {constructor(fn){mutated=fn;} observe(){} disconnect(){disconnected++;}};
+  t.after(()=>Object.assign(globalThis,saved));
+  const element=new EventTarget();
+  Object.assign(element,{clientHeight:100,scrollHeight:240,scrollTop:0,offsetLeft:10,offsetTop:20,clientWidth:300,parentElement:{classList:{add(){}},append(){}},attributes:{},getAttribute(name){return this.attributes[name]??null;},setAttribute(name,value){this.attributes[name]=value;},removeAttribute(name){delete this.attributes[name];}});
+  const dispose=setupScrollHints([element]);
+  assert.equal(hint.hidden,false); assert.equal(element.getAttribute('tabindex'),'0');
+  element.scrollTop=140;element.dispatchEvent(new Event('scroll'));assert.equal(hint.hidden,true);
+  element.scrollHeight=300;mutated();assert.equal(hint.hidden,false);
+  element.clientHeight=400;resized();assert.equal(hint.hidden,true);assert.equal(element.getAttribute('tabindex'),null);
+  dispose();assert.equal(disconnected,2);assert.equal(hint.removed,true);
 });

@@ -168,3 +168,13 @@ p, h1, figure { margin: 0; }
 /* A short, non-interactive passage of light between sections. */
 .portal-transition { position:fixed; left:50%; top:50%; width:150vmax; height:150vmax; z-index:15; pointer-events:none; border-radius:50%; transform:translate(-50%,-50%); border:2px solid #9ff8ff80; background:radial-gradient(circle,transparent 44%,#3ebfce0a 47%,#61dbe52e 49%,#b7fcff99 49.8%,#1b687c24 50.5%,transparent 56%); box-shadow:inset 0 0 50px #57dfe524,0 0 60px #56cad51a; }
 @media (prefers-reduced-motion:reduce), (forced-colors:active) { .portal-transition { display:none; } }
+
+
+/* Keep the next action visible without covering or intercepting the content. */
+.scroll-hint-host { position:relative; }
+.scroll-hint { position:absolute; z-index:3; width:76px; height:19px; display:grid; place-items:center; pointer-events:none; border:1px solid #94e5f547; border-radius:20px; background:#061c2be8; color:#b7f3fa; box-shadow:0 2px 9px #00101b66; font-size:9px; letter-spacing:.12em; }
+:is(a[href],button,input,[tabindex="0"]):focus-visible { outline:2px solid #c3faff; outline-offset:3px; }
+:is(.skill-panel,.contact-main,.contact-side,.top-intro,.career-intro):focus-visible { outline-offset:-3px; }
+:is(.skill-close,.skill-tabs button,.contact-link,.career-controls button,.world-nav a,.contact-nav a) { transition:color .16s,border-color .16s,background-color .16s,box-shadow .16s; }
+:is(.skill-close,.skill-tabs button,.career-controls button,.world-nav a,.contact-nav a):active:not(:disabled) { background-color:#75dce724; }
+@media (prefers-reduced-motion:reduce) { .scroll-hint { transition:none; } }

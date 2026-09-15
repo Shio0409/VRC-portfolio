@@ -64,6 +64,21 @@ export function setupCareer(root) {
     expand.setAttribute('aria-label', value ? '通常表示に戻す' : 'プレイヤーを拡大表示');
   }
   play.addEventListener('click', () => clock.getState().playing ? clock.pause() : clock.play());
+  let resumeAfterSeek=false, seeking=false;
+  seek.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
+    seeking=true; resumeAfterSeek=clock.getState().playing; clock.pause();
+    seek.setPointerCapture?.(event.pointerId);
+  });
+  const endSeek=() => {
+    if (!seeking) return;
+    seeking=false;
+    if (resumeAfterSeek && visible && clock.getState().time < duration) clock.play();
+    resumeAfterSeek=false;
+  };
+  seek.addEventListener('pointerup',endSeek);
+  seek.addEventListener('lostpointercapture',endSeek);
+  seek.addEventListener('pointercancel',() => {seeking=false;resumeAfterSeek=false;});
   seek.addEventListener('input', () => clock.seek(Number(seek.value)));
   seek.addEventListener('keydown', event => {
     const deltas = {ArrowLeft:-5,ArrowDown:-5,ArrowRight:5,ArrowUp:5};
@@ -86,6 +101,7 @@ export function setupCareer(root) {
   render(clock.getState());
   return {
     setVisible(value) {
+      if (!value) {seeking=false;resumeAfterSeek=false;}
       visible = value; updateActive();
       if (value && !started) { started = true; clock.play(); }
       if (!value) setExpanded(false);
