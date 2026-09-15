@@ -4,13 +4,14 @@ import { setupOrientationGate } from './viewport.js';
 import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
+import { setupContact } from './contact.js';
 import { setupTopParallax } from './top-parallax.js';
 import { setupPortal } from './portal.js';
 import { setupSectionNavigation } from './section-navigation.js';
 
 const byId = (id) => document.getElementById(id);
-const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen') };
-const headings = { entry: byId('entry-title'), loading: byId('loading-title'), top: byId('top-title'), career: byId('career-title') };
+const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen'), contact: byId('contact-screen') };
+const headings = { entry: byId('entry-title'), loading: byId('loading-title'), top: byId('top-title'), career: byId('career-title'), contact: byId('contact-title') };
 const image = byId('world-image');
 const soundButton = byId('sound-toggle');
 const progress = byId('travel-progress');
@@ -33,6 +34,7 @@ setupOrientationGate({
 const top = setupTop(screens.top);
 const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
+const contact = setupContact(screens.contact);
 const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
   avatar.setView(x,y);
@@ -49,6 +51,7 @@ function showScreen(name) {
   avatar.setVisible(name === 'top');
   top.setVisible(name === 'top');
   career.setVisible(name === 'career');
+  contact.setVisible(name === 'contact');
   parallax.setVisible(name === 'top');
 }
 const navigation = setupSectionNavigation({

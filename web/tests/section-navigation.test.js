@@ -28,3 +28,9 @@ test('unknown sections never navigate; unknown hashes safely normalize to TOP',(
   f.nav.navigate('career');f.browser.location.hash='#missing';f.browser.dispatchEvent(new Event('hashchange'));
   assert.equal(f.moves.at(-1),'top');assert.deepEqual(f.writes.at(-1),['replace','#top-title']);
 });
+
+test('CONTACT has a direct route and participates in section history',()=>{
+  const f=fixture('#contact-title');assert.equal(f.nav.requested(),'contact');
+  f.ready();f.browser.dispatchEvent(new Event('hashchange'));assert.deepEqual(f.moves,['contact']);
+  f.nav.navigate('career');f.nav.navigate('contact');assert.deepEqual(f.writes.at(-1),['push','#contact-title']);
+});

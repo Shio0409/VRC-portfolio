@@ -833,3 +833,8 @@ TOP / CAREERのNavigation移動に0.7秒の短いPortal通過表現を接続。�
 ### セクションURLの実装（2026-09-15）
 
 TOP / CAREERにhash URLを設定し、Navigation・ブラウザ履歴・直接リンクを同期する。直接リンクでもSound選択とLoadingを通す。WORKS / CONTACTの未確定内容は追加せず、掲載原稿は変更しない。
+
+
+### CONTACT初期実装（2026-09-15）
+
+コンセプト `consept/04contact.png` の大きなガラスプロフィール、左Navigation、丸い画像、右Avatarカード、Links / LanguagesをWeb実装。内容は第22項に従い、Status・Bio・Languages・プロフィール画像・連絡先の未確定状態を維持する。入力待ち部分は準備中とし、コンセプトの架空情報を採用しない。TOP / CAREERとの移動と直接リンクを接続。
