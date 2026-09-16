@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import { setupTopBackground } from '../src/top-background.js';
 
 const flush = () => new Promise(resolve => setImmediate(resolve));
+test('section scenery uses its own source and stays deferred until the section opens', async () => {
+  const world={dataset:{},hidden:true};
+  const image={async decode(){}};
+  const background=setupTopBackground(world,image,'../assets/lounge-world.webp');
+  assert.equal(image.src,undefined);
+  background.setVisible(true); await flush();
+  assert.ok(image.src.endsWith('/assets/lounge-world.webp'));
+  assert.equal(world.dataset.ready,'true');
+  background.setVisible(false);assert.equal(world.hidden,true);
+});
 test('background stays invisible until decode, does not reopen TOP after exit, and is reused', async () => {
   let resolve, calls = 0;
   const world = {dataset:{}, hidden:true};

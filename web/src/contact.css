@@ -74,3 +74,9 @@ a.contact-link:hover,a.contact-link:focus-visible { border-color:#80edff; backgr
   .site-shell[data-screen="contact"] { padding-top:84px; }
   .contact-screen { height:calc(100svh - 132px); }
 }
+
+.contact-world img { filter:brightness(.82); }
+.contact-nav { border-left:1px solid #8ac6de21; background:linear-gradient(90deg,#020c1d52,transparent); border-radius:0 12px 12px 0; }
+.contact-nav ol { border-left:0; }
+.contact-profile { background:linear-gradient(115deg,#618fb71c,#04132238); }
+.contact-avatar-card,.contact-note { background:linear-gradient(135deg,#7ab5d521,#11273d30); }

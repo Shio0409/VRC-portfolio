@@ -12,7 +12,7 @@ const icon = id => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 
 export function setupContact(root, profile = contactProfile) {
   const get = id => root.querySelector(`#${id}`);
-  const background = setupTopBackground(document.getElementById('contact-world'),document.getElementById('contact-world-image'));
+  const background = setupTopBackground(document.getElementById('contact-world'),document.getElementById('contact-world-image'),'../assets/lounge-world.webp');
   get('contact-name').textContent = profile.name;
   get('contact-status').textContent = profile.status || 'Status —';
   get('contact-status').dataset.configured = String(Boolean(profile.status));

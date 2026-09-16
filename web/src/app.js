@@ -5,6 +5,7 @@ import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
 import { setupContact } from './contact.js';
+import { setupTopBackground } from './top-background.js';
 import { setupTopParallax, backgroundTransform } from './top-parallax.js';
 import { setupPortal } from './portal.js';
 import { setupSectionNavigation } from './section-navigation.js';
@@ -34,6 +35,7 @@ setupOrientationGate({
 const top = setupTop(screens.top);
 const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
+const careerBackground = setupTopBackground(byId('career-world'),byId('career-world-image'),'../assets/lounge-world.webp');
 const contact = setupContact(screens.contact);
 setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .top-intro, .career-intro'));
 const portal = setupPortal(byId('portal-transition'));
@@ -52,6 +54,7 @@ function showScreen(name) {
   avatar.setVisible(name === 'top');
   top.setVisible(name === 'top');
   career.setVisible(name === 'career');
+  careerBackground.setVisible(name === 'career');
   contact.setVisible(name === 'contact');
   parallax.setVisible(name === 'top');
 }

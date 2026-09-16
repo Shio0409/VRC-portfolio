@@ -24,7 +24,7 @@ const publicFiles = new Map([
   ['/src/portal.js', 'src/portal.js'],
   ['/src/top-parallax.js', 'src/top-parallax.js'],
   ['/src/top-background.js', 'src/top-background.js'],
-  ['/src/dialogue.js', 'src/dialogue.js'], ['/assets/top-world.webp', 'assets/top-world.webp'],
+  ['/src/dialogue.js', 'src/dialogue.js'], ['/assets/top-world.webp', 'assets/top-world.webp'], ['/assets/lounge-world.webp', 'assets/lounge-world.webp'],
   ['/assets/playing.png', 'assets/playing.png'],
   ['/assets/cursor-normal.svg', 'assets/cursor-normal.svg'],
   ['/assets/cursor-hover.svg', 'assets/cursor-hover.svg'],
