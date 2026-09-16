@@ -20,22 +20,33 @@ test('latest pointer view is applied when loading completes and subsequent motio
   f.slot.setVisible(false); const count=views.length;
   f.slot.setView(0,0); assert.equal(views.length,count);
 });
-test('Three.js is deferred until TOP; ready avatar opens skills and leaving releases scene once',async()=>{
-  let imports=0,disposed=0;
-  const f=fixture(async()=>{imports++;return {createAvatarScene:async()=>({dispose:()=>disposed++})};});
-  assert.equal(imports,0); f.slot.setVisible(true); await flush();
-  assert.equal(f.elements['avatar-button'].disabled,false);
-  f.elements['avatar-button'].click(); assert.equal(f.opened(),1);
-  f.slot.setVisible(false); f.slot.setVisible(false); assert.equal(disposed,1);
-  f.slot.setVisible(true); await flush(); assert.equal(imports,2); f.slot.setVisible(false);
+test('Loading preloads once, and repeated TOP visits reuse the scene',async()=>{
+  let imports=0,disposed=0;const visibility=[];
+  const f=fixture(async()=>{imports++;return {createAvatarScene:async()=>({dispose:()=>disposed++,setVisible:v=>visibility.push(v)})};});
+  const first=f.slot.preload();assert.equal(f.slot.preload(),first);await first;
+  assert.equal(imports,1);assert.equal(visibility.at(-1),false);
+  f.slot.setVisible(true);f.elements['avatar-button'].click();assert.equal(f.opened(),1);
+  f.slot.setVisible(false);f.slot.setVisible(true);await flush();
+  assert.equal(imports,1);assert.equal(disposed,0);assert.equal(visibility.at(-1),true);
+  f.slot.dispose();f.slot.dispose();assert.equal(disposed,1);
 });
-test('a stale completed parse is disposed and cannot enable an avatar after leaving TOP',async()=>{
+
+test('leaving TOP during preparation retains the result for re-entry',async()=>{
   let resolve,disposed=0,signal;
   const f=fixture(async()=>({createAvatarScene:args=>{signal=args.signal;return new Promise(r=>resolve=r);}}));
-  f.slot.setVisible(true); await flush(); f.slot.setVisible(false);
-  assert.equal(signal.aborted,true); resolve({dispose:()=>disposed++}); await flush();
-  assert.equal(disposed,1); assert.equal(f.elements['avatar-button'].disabled,true);
+  f.slot.setVisible(true);await flush();f.slot.setVisible(false);
+  assert.equal(signal.aborted,false);resolve({dispose:()=>disposed++});await flush();
+  assert.equal(disposed,0);assert.equal(f.elements['avatar-button'].dataset.ready,'true');
+  f.slot.setVisible(true);assert.equal(f.elements['avatar-button'].disabled,false);f.slot.dispose();
 });
+
+test('explicit disposal invalidates a pending scene and allows a fresh load',async()=>{
+  let resolve,disposed=0;
+  const f=fixture(async()=>({createAvatarScene:()=>new Promise(r=>resolve=r)}));
+  const waiting=f.slot.preload();await flush();f.slot.dispose();resolve({dispose:()=>disposed++});await waiting;
+  assert.equal(disposed,1);assert.equal(f.elements['avatar-button'].disabled,true);
+});
+
 test('a failed load remains retryable and a retry can become ready',async()=>{
   let calls=0; const original=console.error; console.error=()=>{};
   try {

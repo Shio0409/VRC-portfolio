@@ -31,7 +31,7 @@ export function setupTopParallax(onView) {
   function tick(time) {
     frame = null;
     if (!enabled()) return;
-    const alpha = 1 - Math.exp(-Math.min(64, last ? time - last : 16) / 100); last = time;
+    const alpha = 1 - Math.exp(-Math.min(64, last ? time - last : 16) / 420); last = time;
     current.x += (target.x - current.x) * alpha;
     current.y += (target.y - current.y) * alpha;
     const moving = Math.hypot(target.x-current.x,target.y-current.y) > .0005;

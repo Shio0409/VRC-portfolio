@@ -54,7 +54,9 @@ test('motion settles, stops on exit and resets for reduced motion', t => {
   t.after(()=>Object.assign(globalThis,original));
   const controller=setupTopParallax((x,y)=>{latest={x,y};calls++;}); controller.setVisible(true);
   const move=new Event('pointermove'); Object.assign(move,{clientX:1000,clientY:300,pointerType:'mouse'}); window.dispatchEvent(move);
-  for(let i=0;i<120&&queued;i++){const fn=queued;queued=undefined;fn(time+=16);}
+  const first=queued;queued=undefined;first(time+=16);
+  assert.ok(latest.x<0 && latest.x>-.05,'initial motion follows gently instead of snapping');
+  for(let i=0;i<400&&queued;i++){const fn=queued;queued=undefined;fn(time+=16);}
   assert.deepEqual(latest,{x:-1,y:0}); assert.equal(queued,undefined);
   const previous=calls; controller.setVisible(false); window.dispatchEvent(move);
   assert.deepEqual(latest,{x:0,y:0}); assert.equal(calls,previous+1); assert.equal(queued,undefined);

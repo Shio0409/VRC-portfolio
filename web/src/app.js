@@ -20,6 +20,7 @@ const fill = byId('progress-fill');
 const shell = byId('site-shell');
 const flow = createEntryFlow({
   loadAssets: loadInitialAssets,
+  prepareAssets: () => avatar.preload(),
   now: () => performance.now(),
   requestFrame: (callback) => requestAnimationFrame(callback),
   cancelFrame: (id) => cancelAnimationFrame(id),
@@ -134,4 +135,4 @@ byId('retry-button').addEventListener('click', () => flow.retry());
 byId('return-button').addEventListener('click', () => { navigation.sync('top',true); flow.reset(); });
 soundButton.addEventListener('click', () => flow.setSound(!flow.getState().soundEnabled));
 // Stop work on exit; a restored back-forward-cache page starts with the sound choice again.
-window.addEventListener('pagehide', () => flow.reset());
+window.addEventListener('pagehide', event => { flow.reset(); if (!event.persisted) avatar.dispose(); });

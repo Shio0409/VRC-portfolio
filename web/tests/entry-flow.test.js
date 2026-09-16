@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import { setImmediate } from 'node:timers/promises';
 import { createEntryFlow } from '../src/entry-flow.js';
 
-function setup() {
+function setup(prepareAssets) {
   let clock = 0;
   let nextId = 0;
   const frames = new Map();
   const requests = [];
   const flow = createEntryFlow({
+    prepareAssets,
     now: () => clock,
     requestFrame: (callback) => { frames.set(++nextId, callback); return nextId; },
     cancelFrame: (id) => frames.delete(id),
@@ -24,6 +25,25 @@ function setup() {
   const assets = () => ({ imageUrl: 'blob:thumbnail', dispose: () => disposed++ });
   return { flow, advance, requests, assets, frames, get disposed() { return disposed; } };
 }
+
+test('thumbnail displays during avatar preparation and Loading waits for both',async()=>{
+  let ready;
+  const s=setup(()=>new Promise(resolve=>ready=resolve));
+  s.flow.start();await setImmediate();s.requests[0].onProgress(1);s.requests[0].resolve(s.assets());await setImmediate();
+  s.advance(3000);
+  assert.equal(s.flow.getState().assetUrl,'blob:thumbnail');assert.equal(s.flow.getState().phase,'loading');
+  assert.equal(s.flow.getState().loadingStage,'initializing');
+  ready();await setImmediate();s.advance(3016);assert.equal(s.flow.getState().phase,'top');
+});
+
+test('SKIP does not wait for preparation or let a late completion change the screen',async()=>{
+  let ready;
+  const s=setup(()=>new Promise(resolve=>ready=resolve));
+  s.flow.start();await setImmediate();s.requests[0].resolve(s.assets());await setImmediate();
+  s.flow.skip();assert.equal(s.flow.getState().phase,'top');
+  s.flow.reset();ready();await setImmediate();s.advance(3000);
+  assert.equal(s.flow.getState().phase,'entry');
+});
 
 test('initial entry is muted and does not load assets before a choice', async () => {
   const s = setup();

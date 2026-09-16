@@ -13,7 +13,7 @@ function presentationProgress(time) {
 }
 
 /** Entry timing and cancellation. No DOM, audio, storage, or avatar assumptions. */
-export function createEntryFlow({ loadAssets, now, requestFrame, cancelFrame, minimumMs = 2000 }) {
+export function createEntryFlow({ loadAssets, prepareAssets = async () => {}, now, requestFrame, cancelFrame, minimumMs = 2000 }) {
   let state = { phase: 'entry', soundEnabled: false, progress: 0, assetUrl: null, loadingStage: 'traveling' };
   let run = null;
   const subscribers = new Set();
@@ -52,6 +52,9 @@ export function createEntryFlow({ loadAssets, now, requestFrame, cancelFrame, mi
     run = current;
     emit({ phase: 'loading', soundEnabled: Boolean(soundEnabled), progress: 0, assetUrl: null, loadingStage: 'traveling' });
     tick(current);
+    const preparation = Promise.resolve().then(() => prepareAssets());
+    // Observe immediately even when the thumbnail request is still pending.
+    preparation.catch(() => {});
     Promise.resolve().then(() => {
       if (run !== current) return null;
       return loadAssets({
@@ -66,8 +69,8 @@ export function createEntryFlow({ loadAssets, now, requestFrame, cancelFrame, mi
       if (!assets) return;
       if (run !== current) { assets.dispose(); return; }
       current.assets = assets;
-      current.ready = true;
       emit({ assetUrl: assets.imageUrl, loadingStage: now() - current.started >= minimumMs * .58 ? 'initializing' : 'traveling' });
+      return preparation.then(() => { if (run === current) current.ready = true; });
     }).catch(() => {
       if (run !== current) return;
       if (current.frame !== null) cancelFrame(current.frame);

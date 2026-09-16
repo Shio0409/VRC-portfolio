@@ -6,7 +6,7 @@ import { framingDistance, orbitDirection } from './avatar-framing.js';
 export async function createAvatarScene({ canvas, signal }) {
   let renderer, model, observer;
   const geometries = new Set(), materials = new Set(), textures = new Set();
-  let disposed = false;
+  let disposed = false, visible = false;
   const dispose = () => {
     if (disposed) return;
     disposed = true; observer?.disconnect();
@@ -23,7 +23,7 @@ export async function createAvatarScene({ canvas, signal }) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 100);
   function draw() {
-    if (disposed || document.hidden || !model || !canvas.getBoundingClientRect().width) return;
+    if (disposed || !visible || document.hidden || !model || !canvas.getBoundingClientRect().width) return;
     renderer.render(scene, camera);
   }
   try {
@@ -85,15 +85,20 @@ export async function createAvatarScene({ canvas, signal }) {
       camera.lookAt(face); draw();
     };
     const resize = () => {
-      if (disposed) return;
+      if (disposed || !visible) return;
       const { width, height } = canvas.getBoundingClientRect();
       if (!width || !height) return;
       renderer.setSize(width, height, false); camera.aspect = width / height;
       distance = framingDistance(points,camera.aspect,camera.fov);
       camera.updateProjectionMatrix(); orbit();
     };
+    // Prepare texture uploads and shader programs while the TOP canvas is hidden.
+    renderer.setSize(1,1,false);
+    for(const texture of textures) renderer.initTexture(texture);
+    await renderer.compileAsync(scene,camera);
+    signal.throwIfAborted();
     observer = new ResizeObserver(resize); observer.observe(canvas);
     document.addEventListener('visibilitychange', draw); resize();
-    return { dispose, setView(x,y) { if (disposed) return; viewX=x; viewY=y; orbit(); } };
+    return { dispose, setVisible(value) { visible=value; if(value)resize(); }, setView(x,y) { if (disposed) return; viewX=x; viewY=y; if(visible)orbit(); } };
   } catch (error) { dispose(); throw error; }
 }
