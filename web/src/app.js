@@ -38,7 +38,7 @@ const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
 const careerBackground = setupTopBackground(byId('career-world'),byId('career-world-image'),'../assets/lounge-world.webp');
 const contact = setupContact(screens.contact);
-setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .top-intro, .career-intro, .contact-intro'));
+setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .section-overview'));
 const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
   const section = shell.dataset.screen;

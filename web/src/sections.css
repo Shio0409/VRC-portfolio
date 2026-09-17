@@ -12,10 +12,10 @@
 }
 .top-screen.section-screen { grid-template-columns:var(--section-rail) minmax(120px,1.3fr) minmax(310px,1.6fr); }
 .section-screen .section-intro {
-  display:flex; flex-direction:column; align-items:stretch; min-width:0;
-  min-height:0; padding:0; overflow:auto; scrollbar-width:thin;
-  scrollbar-color:#397085 transparent;
+  display:grid; grid-template-rows:minmax(0,1fr) auto; gap:16px; min-width:0;
+  min-height:0; padding:0; overflow:visible; position:relative;
 }
+.section-overview { min-height:0; overflow:auto; scrollbar-width:thin; scrollbar-color:#397085 transparent; overscroll-behavior:contain; padding-right:4px; }
 .section-intro :is(#top-title,#career-title,#contact-title) {
   flex-shrink:0;
   margin:0 0 12px; font-size:clamp(20px,2.4vw,36px); font-weight:300;
@@ -25,7 +25,8 @@
   flex-shrink:0;
   font-size:clamp(10px,1vw,13px); line-height:1.9; letter-spacing:.13em; color:var(--muted);
 }
-.section-copy { flex:0 0 clamp(180px,27svh,250px); padding-top:clamp(20px,3svh,40px); }
+.section-copy { padding-top:clamp(20px,3svh,40px); }
+.section-copy:empty { display:none; }
 .section-copy :is(.top-tagline,.career-tagline) {
   margin:0; color:var(--cyan); font-size:clamp(13px,1.5vw,22px);
   font-weight:400; line-height:1.9; letter-spacing:.05em; text-shadow:0 0 20px #63e6ef25;
@@ -45,7 +46,27 @@
 @media (max-height:500px) {
   .site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) { padding-top:76px; padding-bottom:48px; }
   .section-screen.section-screen { height:calc(100svh - 124px); min-height:260px; }
-  .section-copy { flex-basis:160px; padding-top:18px; }
+  .section-copy { padding-top:18px; }
+  .section-screen .section-intro { gap:8px; }
   .section-intro .world-nav :is(a,button) { min-height:44px; }
   .section-screen :is(.skill-menu,.career-player,.contact-profile) { border-radius:16px; }
+}
+
+/* Every navigation target stays visible; only the introduction scrolls. */
+.section-intro .world-nav { border-radius:0 8px 8px 0; background:linear-gradient(90deg,#04111c60,transparent); }
+.section-screen :is(a,button,input):focus-visible,
+.section-overview:focus-visible { outline:2px solid #c5faff; outline-offset:3px; }
+.section-overview:focus-visible { outline-offset:-2px; }
+.section-screen :is(.world-nav a,.skill-tabs button,.skill-close,.career-controls button,a.contact-link) {
+  transition:background-color .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease;
+  touch-action:manipulation;
+}
+.section-screen :is(.world-nav a,.skill-tabs button,.career-controls button,a.contact-link):active:not(:disabled) {
+  background-color:#78e8f32b; color:#efffff; box-shadow:inset 0 1px 7px #07162370;
+}
+.section-screen:not([hidden]) :is(.skill-menu,.career-player,.contact-profile) { animation:section-arrive .28s ease-out; }
+@keyframes section-arrive { from { opacity:.65; } to { opacity:1; } }
+@media (prefers-reduced-motion:reduce) {
+  .section-screen :is(a,button,input) { transition:none; }
+  .section-screen:not([hidden]) :is(.skill-menu,.career-player,.contact-profile) { animation:none; }
 }
