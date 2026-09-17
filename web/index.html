@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./src/top.css" />
     <link rel="stylesheet" href="./src/career.css" />
     <link rel="stylesheet" href="./src/contact.css" />
+    <link rel="stylesheet" href="./src/sections.css" />
     <script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/examples/jsm/"}}</script>
     <script type="module" src="./src/app.js"></script>
   </head>
@@ -116,12 +117,12 @@
           </div>
         </section>
 
-        <section class="screen top-screen" id="top-screen" aria-labelledby="top-title" hidden>
-          <div class="top-intro">
+        <section class="screen top-screen section-screen" id="top-screen" aria-labelledby="top-title" hidden>
+          <div class="top-intro section-intro">
             <h1 id="top-title" tabindex="-1" lang="en">01 TOP</h1>
             <p class="top-byline" lang="en">Sio's Portfolio<br />by Sio0409</p>
-            <p class="top-tagline">VRで出会う、<br />もうひとつのわたし。</p>
-            <p class="top-caption">企画・制作・技術・運営。<br />アイデアを、動く形へ。</p>
+            <div class="section-copy"><p class="top-tagline">VRで出会う、<br />もうひとつのわたし。</p>
+            <p class="top-caption">企画・制作・技術・運営。<br />アイデアを、動く形へ。</p></div>
             <nav class="world-nav" aria-label="サイト内ナビゲーション">
               <ol>
                 <li><a href="#top-title" aria-current="page"><span>01</span> TOP</a></li>
@@ -156,11 +157,11 @@
           </aside>
           <button type="button" id="skill-open" class="button skill-open" aria-controls="skill-menu" aria-expanded="true" hidden>SKILL MENU ＋</button>
         </section>
-        <section class="screen career-screen" id="career-screen" aria-labelledby="career-title" hidden>
-          <div class="career-intro">
+        <section class="screen career-screen section-screen" id="career-screen" aria-labelledby="career-title" hidden>
+          <div class="career-intro section-intro">
             <h1 id="career-title" tabindex="-1">02 CAREER</h1>
             <p class="top-byline">Sio's Portfolio<br />by Sio0409</p>
-            <p class="career-tagline">自分のキャリアを、<br />再生する。</p>
+            <div class="section-copy"><p class="career-tagline">自分のキャリアを、<br />再生する。</p></div>
             <nav class="world-nav" aria-label="サイト内ナビゲーション">
               <ol>
                 <li><a href="#top-title" data-section="top"><span>01</span> TOP</a></li>
@@ -195,14 +196,18 @@
             </div>
           </div>
         </section>
-        <section class="screen contact-screen" id="contact-screen" aria-labelledby="contact-title" hidden>
-          <header class="contact-heading"><p>Sio's Portfolio by Sio0409</p><h1 id="contact-title" tabindex="-1"><span>04</span> CONTACT</h1></header>
-          <nav class="contact-nav" aria-label="サイト内ナビゲーション"><ol>
-            <li><a href="#top-title" data-section="top"><small>01</small>TOP</a></li>
-            <li><a href="#career-title" data-section="career"><small>02</small>CAREER</a></li>
-            <li><button type="button" disabled><small>03</small>WORKS</button></li>
-            <li><a href="#contact-title" aria-current="page"><small>04</small>CONTACT</a></li>
-          </ol></nav>
+        <section class="screen contact-screen section-screen" id="contact-screen" aria-labelledby="contact-title" hidden>
+          <div class="contact-intro section-intro">
+            <h1 id="contact-title" tabindex="-1" lang="en">04 CONTACT</h1>
+            <p class="top-byline" lang="en">Sio's Portfolio<br />by Sio0409</p>
+            <div class="section-copy"></div>
+            <nav class="world-nav" aria-label="サイト内ナビゲーション"><ol>
+              <li><a href="#top-title" data-section="top"><span>01</span> TOP</a></li>
+              <li><a href="#career-title" data-section="career"><span>02</span> CAREER</a></li>
+              <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
+              <li><a href="#contact-title" aria-current="page"><span>04</span> CONTACT</a></li>
+            </ol></nav>
+          </div>
           <div class="contact-profile">
             <div class="contact-main">
               <div class="contact-identity">

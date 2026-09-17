@@ -36,6 +36,7 @@ publicFiles.set('/src/career-data.js', 'src/career-data.js');
 publicFiles.set('/src/career-clock.js', 'src/career-clock.js');
 
 publicFiles.set('/src/contact.css', 'src/contact.css');
+publicFiles.set('/src/sections.css', 'src/sections.css');
 publicFiles.set('/src/contact.js', 'src/contact.js');
 publicFiles.set('/src/contact-data.js', 'src/contact-data.js');
 

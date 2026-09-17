@@ -38,15 +38,17 @@ const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
 const careerBackground = setupTopBackground(byId('career-world'),byId('career-world-image'),'../assets/lounge-world.webp');
 const contact = setupContact(screens.contact);
-setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .top-intro, .career-intro'));
+setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .top-intro, .career-intro, .contact-intro'));
 const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
-  avatar.setView(x,y);
-  byId('top-world-image').style.transform = backgroundTransform(x,y,innerWidth,innerHeight);
+  const section = shell.dataset.screen;
+  if (!['top','career','contact'].includes(section)) return;
+  if (section === 'top') avatar.setView(x,y);
+  byId(`${section}-world-image`).style.transform = backgroundTransform(x,y,innerWidth,innerHeight);
   // Glass catches the same view movement; no separate animation loop.
-  screens.top.style.setProperty('--reflection-angle', `${118 + x * 8}deg`);
-  screens.top.style.setProperty('--reflection-x', `${50 + x * 28}%`);
-  screens.top.style.setProperty('--reflection-y', `${35 - y * 20}%`);
+  screens[section].style.setProperty('--reflection-angle', `${118 + x * 8}deg`);
+  screens[section].style.setProperty('--reflection-x', `${50 + x * 28}%`);
+  screens[section].style.setProperty('--reflection-y', `${35 - y * 20}%`);
 });
 function showScreen(name) {
   portal.cancel();
@@ -57,7 +59,8 @@ function showScreen(name) {
   career.setVisible(name === 'career');
   careerBackground.setVisible(name === 'career');
   contact.setVisible(name === 'contact');
-  parallax.setVisible(name === 'top');
+  parallax.setVisible(false);
+  parallax.setVisible(['top','career','contact'].includes(name));
 }
 const navigation = setupSectionNavigation({
   canNavigate: () => flow.getState().phase === 'top',

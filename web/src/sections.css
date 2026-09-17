@@ -1,0 +1,51 @@
+/* Shared section frame: identical anchors and type across TOP, CAREER, CONTACT. */
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) {
+  --section-rail:clamp(176px,20vw,300px);
+  --section-gap:clamp(12px,2vw,32px);
+  padding-top:84px; padding-bottom:72px;
+}
+.section-screen.section-screen {
+  width:100%; max-width:1600px; height:calc(100svh - 156px);
+  min-height:300px; max-height:900px; margin:auto;
+  grid-template-columns:var(--section-rail) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr); gap:var(--section-gap);
+}
+.top-screen.section-screen { grid-template-columns:var(--section-rail) minmax(120px,1.3fr) minmax(310px,1.6fr); }
+.section-screen .section-intro {
+  display:flex; flex-direction:column; align-items:stretch; min-width:0;
+  min-height:0; padding:0; overflow:auto; scrollbar-width:thin;
+  scrollbar-color:#397085 transparent;
+}
+.section-intro :is(#top-title,#career-title,#contact-title) {
+  flex-shrink:0;
+  margin:0 0 12px; font-size:clamp(20px,2.4vw,36px); font-weight:300;
+  letter-spacing:.13em; line-height:1.3; color:#e1f3fa; white-space:nowrap;
+}
+.section-intro .top-byline {
+  flex-shrink:0;
+  font-size:clamp(10px,1vw,13px); line-height:1.9; letter-spacing:.13em; color:var(--muted);
+}
+.section-copy { flex:0 0 clamp(180px,27svh,250px); padding-top:clamp(20px,3svh,40px); }
+.section-copy :is(.top-tagline,.career-tagline) {
+  margin:0; color:var(--cyan); font-size:clamp(13px,1.5vw,22px);
+  font-weight:400; line-height:1.9; letter-spacing:.05em; text-shadow:0 0 20px #63e6ef25;
+}
+.section-screen .section-intro .world-nav { flex-shrink:0; margin:0; padding:0; }
+.section-intro .world-nav ol { padding-left:16px; margin:0 0 0 8px; border-left:1px solid #527483; }
+.section-intro .world-nav :is(a,button) {
+  gap:8px; padding:8px; min-height:48px; font-size:clamp(11px,1.1vw,14px);
+  font-weight:400; letter-spacing:.1em; color:var(--muted);
+}
+.section-intro .world-nav li::before { top:19px; left:-23px; width:12px; height:12px; border-color:#719eaf; background:#06152160; box-shadow:none; }
+.section-intro .world-nav li:has([aria-current])::before { border-color:var(--cyan); background:var(--cyan); box-shadow:0 0 15px #5be8ef8c; }
+.section-intro .world-nav [aria-current] { color:var(--cyan); letter-spacing:.1em; }
+.section-intro .world-nav small { font-size:9px; }
+.section-screen :is(.skill-menu,.career-player,.contact-profile) { border-radius:18px; border-color:#9ce4ff91; }
+.career-world img,.contact-world img { transform:scale(1.2); }
+@media (max-height:500px) {
+  .site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) { padding-top:76px; padding-bottom:48px; }
+  .section-screen.section-screen { height:calc(100svh - 124px); min-height:260px; }
+  .section-copy { flex-basis:160px; padding-top:18px; }
+  .section-intro .world-nav :is(a,button) { min-height:44px; }
+  .section-screen :is(.skill-menu,.career-player,.contact-profile) { border-radius:16px; }
+}
