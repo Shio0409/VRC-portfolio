@@ -35,6 +35,7 @@ publicFiles.set('/src/career.js', 'src/career.js');
 publicFiles.set('/src/career-data.js', 'src/career-data.js');
 publicFiles.set('/src/career-clock.js', 'src/career-clock.js');
 
+for (const file of ['works.css','works.js','works-data.js']) publicFiles.set(`/src/${file}`,`src/${file}`);
 publicFiles.set('/src/contact.css', 'src/contact.css');
 publicFiles.set('/src/sections.css', 'src/sections.css');
 publicFiles.set('/src/contact.js', 'src/contact.js');

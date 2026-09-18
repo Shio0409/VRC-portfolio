@@ -1,4 +1,4 @@
-const routes = {top:'#top-title',career:'#career-title',contact:'#contact-title'};
+const routes = {top:'#top-title',career:'#career-title',works:'#works-title',contact:'#contact-title'};
 
 /** Hash routes work on project Pages as well as a custom-domain root. */
 export function setupSectionNavigation({browser = window, canNavigate, getCurrent, onNavigate}) {

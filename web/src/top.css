@@ -70,7 +70,7 @@ body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
 
 /* Thin rims, localized glints and restrained reflections leave the scenery visible.
    Pseudo-elements do not capture input or create another backdrop blur layer. */
-:is(.skill-menu, .dialogue, .contact-profile, .career-player)::before {
+:is(.skill-menu, .dialogue, .contact-profile, .career-player, .works-gallery)::before {
   content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
   background:
     radial-gradient(ellipse at var(--reflection-x,75%) 0%,#d5f9ff38,transparent 32%),
@@ -78,7 +78,7 @@ body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
   border-top:1px solid #ecfcff91; border-left:1px solid #c6f4ff52;
   box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #99e6ff50;
 }
-:is(.skill-menu, .contact-profile, .career-player)::after {
+:is(.skill-menu, .contact-profile, .career-player, .works-gallery)::after {
   content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
   background:radial-gradient(ellipse 100px 2px at var(--reflection-x,75%) 0%,#d9fcff,transparent),radial-gradient(ellipse 2px 75px at 0% var(--reflection-y,70%),#b5f5ff90,transparent),radial-gradient(ellipse 110px 2px at 25% 100%,#70dfff8c,transparent);
 }
@@ -121,12 +121,12 @@ body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
 }
 
 /* Match the reference's compact chrome and give the scene the primary space. */
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .brand { flex-direction:row; align-items:center; gap:12px; }
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .brand-name { font-size:clamp(13px,1.3vw,19px); letter-spacing:.24em; }
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .brand .small-rule { width:1px; height:18px; margin:0; }
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .brand-description { font-size:9px; letter-spacing:.14em; }
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .brand-caption { font-size:10px; color:#9dbdce; }
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .header-right { flex-direction:row; align-items:center; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .brand { flex-direction:row; align-items:center; gap:12px; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .brand-name { font-size:clamp(13px,1.3vw,19px); letter-spacing:.24em; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .brand .small-rule { width:1px; height:18px; margin:0; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .brand-description { font-size:9px; letter-spacing:.14em; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .brand-caption { font-size:10px; color:#9dbdce; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .header-right { flex-direction:row; align-items:center; }
 .site-shell[data-screen="top"] { padding-top:84px; padding-bottom:72px; }
 .top-screen { height:calc(100svh - 156px); max-height:900px; }
 .top-intro { padding-top:0; }
@@ -148,7 +148,7 @@ body:has(.site-shell[data-screen="top"]) .atmosphere { visibility:hidden; }
   #skill-panel-user .skill-group li { min-height:74px; }
 }
 
-.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="contact"]) .corner-words { font-size:9px; line-height:1.4; letter-spacing:.14em; }
+.site-shell:is([data-screen="top"],[data-screen="career"],[data-screen="works"],[data-screen="contact"]) .corner-words { font-size:9px; line-height:1.4; letter-spacing:.14em; }
 #skill-panel-user { display:flex; flex-direction:column; }
 #skill-panel-user .skill-group { margin-top:auto; padding-top:24px; flex-shrink:0; }
 #skill-panel-user .skill-group li { font-size:clamp(11px,1.05vw,15px); text-wrap:balance; }

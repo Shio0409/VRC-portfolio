@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="./src/top.css" />
     <link rel="stylesheet" href="./src/career.css" />
     <link rel="stylesheet" href="./src/contact.css" />
+    <link rel="stylesheet" href="./src/works.css" />
     <link rel="stylesheet" href="./src/sections.css" />
     <script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/examples/jsm/"}}</script>
     <script type="module" src="./src/app.js"></script>
   </head>
   <body>
     <div class="portal-transition" id="portal-transition" aria-hidden="true" hidden></div>
+    <div class="top-world works-world" id="works-world" aria-hidden="true" hidden><img id="works-world-image" alt="" decoding="async" /></div>
     <div class="top-world contact-world" id="contact-world" aria-hidden="true" hidden><img id="contact-world-image" alt="" decoding="async" /></div>
     <div class="top-world career-world" id="career-world" aria-hidden="true" hidden><img id="career-world-image" alt="" decoding="async" /></div>
     <div class="top-world" id="top-world" aria-hidden="true" hidden><img id="top-world-image" alt="" decoding="async" /></div>
@@ -130,7 +132,7 @@
               <ol>
                 <li><a href="#top-title" aria-current="page"><span>01</span> TOP</a></li>
                 <li><a href="#career-title" data-section="career"><span>02</span> CAREER</a></li>
-                <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
+                <li><a href="#works-title" data-section="works"><span>03</span> WORKS</a></li>
                 <li><a href="#contact-title" data-section="contact"><span>04</span> CONTACT</a></li>
               </ol>
             </nav>
@@ -170,7 +172,7 @@
               <ol>
                 <li><a href="#top-title" data-section="top"><span>01</span> TOP</a></li>
                 <li><a href="#career-title" aria-current="page"><span>02</span> CAREER</a></li>
-                <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
+                <li><a href="#works-title" data-section="works"><span>03</span> WORKS</a></li>
                 <li><a href="#contact-title" data-section="contact"><span>04</span> CONTACT</a></li>
               </ol>
             </nav>
@@ -200,6 +202,54 @@
             </div>
           </div>
         </section>
+        <section class="screen works-screen section-screen" id="works-screen" aria-labelledby="works-title" hidden>
+          <div class="works-intro section-intro">
+            <div class="section-overview">
+              <h1 id="works-title" tabindex="-1" lang="en">03 WORKS</h1>
+              <p class="top-byline" lang="en">Sio's Portfolio<br />by Sio0409</p>
+            </div>
+            <nav class="world-nav" aria-label="サイト内ナビゲーション"><ol>
+              <li><a href="#top-title" data-section="top"><span>01</span> TOP</a></li>
+              <li><a href="#career-title" data-section="career"><span>02</span> CAREER</a></li>
+              <li><a href="#works-title" aria-current="page"><span>03</span> WORKS</a></li>
+              <li><a href="#contact-title" data-section="contact"><span>04</span> CONTACT</a></li>
+            </ol></nav>
+          </div>
+          <div class="works-gallery">
+            <header class="works-gallery-header">
+              <p>WORKS EXHIBITION</p>
+              <button class="works-light" id="works-light" type="button" aria-label="展示ライト" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18h6m-6 3h6M8 14a6 6 0 1 1 8 0l-1 2H9Z"/></svg>
+                <span id="works-light-label">LIGHT OFF</span>
+              </button>
+            </header>
+            <div class="work-tabs" id="works-tabs" role="tablist" aria-label="展示作品を選ぶ"></div>
+            <div class="works-detail" id="works-detail" role="tabpanel" tabindex="0">
+              <div class="work-display">
+                <div class="work-display-content">
+                  <span class="work-display-number" id="work-display-number" aria-hidden="true">01</span>
+                  <p class="work-display-label" id="work-display-label"></p>
+                  <p>展示素材は準備中です。</p>
+                </div>
+              </div>
+              <article class="work-information" id="work-information" aria-labelledby="work-title">
+                <p class="work-kicker"><span>SELECTED WORK</span><span id="work-counter">01 / 05</span></p>
+                <h2 id="work-title"></h2>
+                <p class="work-format-label">展示予定</p>
+                <ul class="work-formats" id="work-formats"></ul>
+                <p class="work-description" id="work-description"></p>
+                <dl class="work-metadata">
+                  <div><dt>YEAR</dt><dd id="work-year">—</dd></div>
+                  <div><dt>CATEGORY</dt><dd id="work-category">—</dd></div>
+                  <div><dt>TOOLS</dt><dd id="work-tools">—</dd></div>
+                  <div><dt>ROLE</dt><dd id="work-role">—</dd></div>
+                  <div><dt>LINK</dt><dd>準備中</dd></div>
+                </dl>
+                <p class="work-video-note" id="work-video-note" hidden>YouTube動画は準備中です。</p>
+              </article>
+            </div>
+          </div>
+        </section>
         <section class="screen contact-screen section-screen" id="contact-screen" aria-labelledby="contact-title" hidden>
           <div class="contact-intro section-intro">
             <div class="section-overview">
@@ -210,7 +260,7 @@
             <nav class="world-nav" aria-label="サイト内ナビゲーション"><ol>
               <li><a href="#top-title" data-section="top"><span>01</span> TOP</a></li>
               <li><a href="#career-title" data-section="career"><span>02</span> CAREER</a></li>
-              <li><button type="button" disabled><span>03</span> WORKS <small>準備中</small></button></li>
+              <li><a href="#works-title" data-section="works"><span>03</span> WORKS</a></li>
               <li><a href="#contact-title" aria-current="page"><span>04</span> CONTACT</a></li>
             </ol></nav>
           </div>

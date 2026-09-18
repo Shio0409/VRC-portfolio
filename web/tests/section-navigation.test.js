@@ -24,7 +24,7 @@ test('navigation adds history once and browser back/forward do not add entries',
   assert.deepEqual(f.moves,['career','top','career']);assert.equal(f.writes.length,1);
 });
 test('unknown sections never navigate; unknown hashes safely normalize to TOP',()=>{
-  const f=fixture('#top-title');f.ready();f.nav.navigate('works');assert.equal(f.writes.length,0);
+  const f=fixture('#top-title');f.ready();f.nav.navigate('missing');assert.equal(f.writes.length,0);
   f.nav.navigate('career');f.browser.location.hash='#missing';f.browser.dispatchEvent(new Event('hashchange'));
   assert.equal(f.moves.at(-1),'top');assert.deepEqual(f.writes.at(-1),['replace','#top-title']);
 });
@@ -33,4 +33,13 @@ test('CONTACT has a direct route and participates in section history',()=>{
   const f=fixture('#contact-title');assert.equal(f.nav.requested(),'contact');
   f.ready();f.browser.dispatchEvent(new Event('hashchange'));assert.deepEqual(f.moves,['contact']);
   f.nav.navigate('career');f.nav.navigate('contact');assert.deepEqual(f.writes.at(-1),['push','#contact-title']);
+});
+
+
+test('WORKS direct link waits for entry and navigates with browser history',()=>{
+  const f=fixture('#works-title');assert.equal(f.nav.requested(),'works');
+  f.nav.navigate('works');assert.deepEqual(f.moves,[]);
+  f.ready();f.browser.dispatchEvent(new Event('hashchange'));assert.deepEqual(f.moves,['works']);
+  f.nav.navigate('contact');f.nav.navigate('works');assert.deepEqual(f.writes.at(-1),['push','#works-title']);
+  f.browser.location.hash='#contact-title';f.browser.dispatchEvent(new Event('popstate'));assert.equal(f.moves.at(-1),'contact');
 });

@@ -4,6 +4,7 @@ import { setupOrientationGate, setupScrollHints } from './viewport.js';
 import { setupTop } from './top.js';
 import { setupAvatarSlot } from './avatar-slot.js';
 import { setupCareer } from './career.js';
+import { setupWorks } from './works.js';
 import { setupContact } from './contact.js';
 import { setupTopBackground } from './top-background.js';
 import { setupTopParallax, backgroundTransform } from './top-parallax.js';
@@ -11,8 +12,8 @@ import { setupPortal } from './portal.js';
 import { setupSectionNavigation } from './section-navigation.js';
 
 const byId = (id) => document.getElementById(id);
-const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen'), contact: byId('contact-screen') };
-const headings = { entry: byId('entry-title'), loading: byId('loading-title'), top: byId('top-title'), career: byId('career-title'), contact: byId('contact-title') };
+const screens = { entry: byId('entry-screen'), loading: byId('loading-screen'), top: byId('top-screen'), career: byId('career-screen'), works: byId('works-screen'), contact: byId('contact-screen') };
+const headings = { entry: byId('entry-title'), loading: byId('loading-title'), top: byId('top-title'), career: byId('career-title'), works: byId('works-title'), contact: byId('contact-title') };
 const image = byId('world-image');
 const soundButton = byId('sound-toggle');
 const progress = byId('travel-progress');
@@ -38,11 +39,13 @@ const avatar = setupAvatarSlot(screens.top, top.openSkills);
 const career = setupCareer(screens.career);
 const careerBackground = setupTopBackground(byId('career-world'),byId('career-world-image'),'../assets/lounge-world.webp');
 const contact = setupContact(screens.contact);
-setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .section-overview'));
+setupWorks(screens.works);
+const worksBackground = setupTopBackground(byId('works-world'),byId('works-world-image'),'../assets/lounge-world.webp');
+setupScrollHints(document.querySelectorAll('.skill-panel, .contact-main, .contact-side, .career-slide, .work-information, .section-overview'));
 const portal = setupPortal(byId('portal-transition'));
 const parallax = setupTopParallax((x,y) => {
   const section = shell.dataset.screen;
-  if (!['top','career','contact'].includes(section)) return;
+  if (!['top','career','works','contact'].includes(section)) return;
   if (section === 'top') avatar.setView(x,y);
   byId(`${section}-world-image`).style.transform = backgroundTransform(x,y,innerWidth,innerHeight);
   // Glass catches the same view movement; no separate animation loop.
@@ -59,8 +62,9 @@ function showScreen(name) {
   career.setVisible(name === 'career');
   careerBackground.setVisible(name === 'career');
   contact.setVisible(name === 'contact');
+  worksBackground.setVisible(name === 'works');
   parallax.setVisible(false);
-  parallax.setVisible(['top','career','contact'].includes(name));
+  parallax.setVisible(['top','career','works','contact'].includes(name));
 }
 const navigation = setupSectionNavigation({
   canNavigate: () => flow.getState().phase === 'top',
